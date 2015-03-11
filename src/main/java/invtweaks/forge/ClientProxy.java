@@ -93,7 +93,7 @@ public class ClientProxy extends CommonProxy {
         if(serverSupportEnabled) {
             player.openContainer.slotClick(slot, data, action, player);
 
-            invtweaksChannel.get(Side.CLIENT).writeOutbound(new ITPacketClick(slot, data, action));
+            invtweaksChannel.get(Side.CLIENT).writeOutbound(new ITPacketClick(slot, data, action, windowId));
         } else {
             playerController.windowClick(windowId, slot, data, action, player);
         }
