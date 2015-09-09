@@ -1,9 +1,11 @@
 package invtweaks;
 
+import net.minecraftforge.common.MinecraftForge;
+
+import org.apache.logging.log4j.Logger;
+
 import invtweaks.api.IItemTreeItem;
 import invtweaks.forge.ClientProxy;
-import net.minecraftforge.common.MinecraftForge;
-import org.apache.logging.log4j.Logger;
 
 import java.io.*;
 import java.lang.reflect.Field;

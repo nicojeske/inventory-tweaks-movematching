@@ -11,6 +11,9 @@ import cpw.mods.fml.common.network.FMLOutboundHandler;
 import cpw.mods.fml.common.network.NetworkRegistry;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import net.minecraft.client.multiplayer.PlayerControllerMP;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.ItemStack;
 import invtweaks.InvTweaksConst;
 import invtweaks.api.IItemTreeListener;
 import invtweaks.api.InvTweaksAPI;
@@ -21,9 +24,6 @@ import invtweaks.network.handlers.ClickMessageHandler;
 import invtweaks.network.handlers.LoginMessageHandler;
 import invtweaks.network.handlers.SortingCompleteMessageHandler;
 import invtweaks.network.packets.ITPacketLogin;
-import net.minecraft.client.multiplayer.PlayerControllerMP;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.ItemStack;
 
 import java.util.EnumMap;
 

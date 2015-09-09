@@ -58,7 +58,7 @@ public class InvTweaksGuiTooltipButton extends GuiButton {
         if(this.drawBackground) {
             super.drawButton(minecraft, i, j);
         } else {
-            this.drawString(minecraft.fontRenderer, this.displayString, this.xPosition,
+            this.drawString(minecraft.fontRendererObj, this.displayString, this.xPosition,
                             this.yPosition + (this.height - 8) / 2, 0x999999);
         }
 

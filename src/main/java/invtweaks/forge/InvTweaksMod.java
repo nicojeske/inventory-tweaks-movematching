@@ -1,14 +1,14 @@
 package invtweaks.forge;
 
+import invtweaks.api.IItemTreeListener;
+import invtweaks.api.InvTweaksAPI;
+import invtweaks.api.SortingMethod;
+import invtweaks.api.container.ContainerSection;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.SidedProxy;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
-import invtweaks.api.IItemTreeListener;
-import invtweaks.api.InvTweaksAPI;
-import invtweaks.api.SortingMethod;
-import invtweaks.api.container.ContainerSection;
 import net.minecraft.item.ItemStack;
 
 /**

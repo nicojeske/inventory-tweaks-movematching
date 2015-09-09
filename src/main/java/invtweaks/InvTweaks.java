@@ -1,11 +1,6 @@
 package invtweaks;
 
 import cpw.mods.fml.common.Loader;
-import invtweaks.api.IItemTree;
-import invtweaks.api.IItemTreeItem;
-import invtweaks.api.SortingMethod;
-import invtweaks.api.container.ContainerSection;
-import invtweaks.forge.InvTweaksMod;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.PositionedSoundRecord;
 import net.minecraft.client.gui.GuiButton;
@@ -19,12 +14,19 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.StatCollector;
+
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.logging.log4j.Logger;
 import org.lwjgl.LWJGLException;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.Display;
+
+import invtweaks.api.IItemTree;
+import invtweaks.api.IItemTreeItem;
+import invtweaks.api.SortingMethod;
+import invtweaks.api.container.ContainerSection;
+import invtweaks.forge.InvTweaksMod;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -170,7 +172,7 @@ public class InvTweaks extends InvTweaksObfuscation {
             ItemStack currentStack = getFocusedStack();
 
             storedStackId = (currentStack == null) ? null : Item.itemRegistry.getNameForObject(currentStack.getItem());
-            storedStackDamage = (currentStack == null) ? 0 : currentStack.getItemDamage();
+            storedStackDamage = (currentStack == null) ? 0 : currentStack.getCurrentDurability();
             if(!wasInGUI) {
                 wasInGUI = true;
             }
@@ -239,7 +241,7 @@ public class InvTweaks extends InvTweaksObfuscation {
                 IItemTree tree = config.getTree();
                 ItemStack stack = containerMgr.getItemStack(currentSlot);
 
-                List<IItemTreeItem> items = tree.getItems(Item.itemRegistry.getNameForObject(stack.getItem()), stack.getItemDamage());
+                List<IItemTreeItem> items = tree.getItems(Item.itemRegistry.getNameForObject(stack.getItem()), stack.getCurrentDurability());
                 for(InvTweaksConfigSortingRule rule : config.getRules()) {
                     if(tree.matches(items, rule.getKeyword())) {
                         for(int slot : rule.getPreferredSlots()) {
@@ -348,11 +350,11 @@ public class InvTweaks extends InvTweaksObfuscation {
 
                         if(iEnchMaxId == jEnchMaxId) {
                             if(iEnchMaxLvl == jEnchMaxLvl) {
-                                if(i.getItemDamage() != j.getItemDamage()) {
+                                if(i.getCurrentDurability() != j.getCurrentDurability()) {
                                     if(i.isItemStackDamageable()) {
-                                        return j.getItemDamage() - i.getItemDamage();
+                                        return j.getCurrentDurability() - i.getCurrentDurability();
                                     } else {
-                                        return i.getItemDamage() - j.getItemDamage();
+                                        return i.getCurrentDurability() - j.getCurrentDurability();
                                     }
                                 } else {
                                     return j.stackSize - i.stackSize;
@@ -612,7 +614,7 @@ public class InvTweaks extends InvTweaksObfuscation {
 
         String currentStackId = (currentStack == null) ? null : Item.itemRegistry.getNameForObject(
                 currentStack.getItem());
-        int currentStackDamage = (currentStack == null) ? 0 : currentStack.getItemDamage();
+        int currentStackDamage = (currentStack == null) ? 0 : currentStack.getCurrentDurability();
         int focusedSlot = getFocusedSlot() + 27; // Convert to container slots index
         InvTweaksConfig config = cfgManager.getConfig();
 
@@ -636,7 +638,7 @@ public class InvTweaks extends InvTweaksObfuscation {
                 }
             } else {
                 // Item
-                int itemMaxDamage = currentStack.getMaxDamage();
+                int itemMaxDamage = currentStack.getMaxDurability();
                 int autoRefillThreshhold = config.getIntProperty(InvTweaksConfig.PROP_AUTO_REFILL_DAMAGE_THRESHHOLD);
                 if(canToolBeReplaced(currentStackDamage, itemMaxDamage, autoRefillThreshhold) && config
                         .getProperty(InvTweaksConfig.PROP_AUTO_REFILL_BEFORE_BREAK)
@@ -944,7 +946,7 @@ public class InvTweaks extends InvTweaksObfuscation {
 
     private int getItemOrder(ItemStack itemStack) {
         List<IItemTreeItem> items = cfgManager.getConfig().getTree().getItems(Item.itemRegistry.getNameForObject(itemStack.getItem()),
-                                                                              itemStack.getItemDamage());
+                                                                              itemStack.getCurrentDurability());
         return (items != null && items.size() > 0) ? items.get(0).getOrder() : Integer.MAX_VALUE;
     }
 
@@ -1016,7 +1018,7 @@ public class InvTweaks extends InvTweaksObfuscation {
         if(!cfgManager.getConfig().getProperty(InvTweaksConfig.PROP_ENABLE_SOUNDS)
                       .equals(InvTweaksConfig.VALUE_FALSE)) {
             mc.getSoundHandler()
-              .playSound(PositionedSoundRecord.func_147674_a(new ResourceLocation("gui.button.press"), 1.0F));
+              .playSound(PositionedSoundRecord.createPositionedSoundRecord(new ResourceLocation("gui.button.press"), 1.0F));
         }
     }
 

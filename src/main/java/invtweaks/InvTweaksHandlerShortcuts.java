@@ -1,14 +1,16 @@
 package invtweaks;
 
-import invtweaks.api.container.ContainerSection;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+
 import org.apache.logging.log4j.Logger;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
+
+import invtweaks.api.container.ContainerSection;
 
 import java.util.*;
 import java.util.concurrent.TimeoutException;

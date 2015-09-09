@@ -2,14 +2,14 @@ package invtweaks;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-import invtweaks.api.container.ContainerSection;
-import invtweaks.forge.InvTweaksMod;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
+import invtweaks.api.container.ContainerSection;
+import invtweaks.forge.InvTweaksMod;
 
 import java.util.HashMap;
 import java.util.List;

@@ -2,15 +2,17 @@ package invtweaks.forge.asm;
 
 import cpw.mods.fml.common.asm.transformers.deobf.FMLDeobfuscatingRemapper;
 import cpw.mods.fml.relauncher.FMLRelaunchLog;
-import invtweaks.forge.asm.compatibility.CompatibilityConfigLoader;
-import invtweaks.forge.asm.compatibility.ContainerInfo;
-import invtweaks.forge.asm.compatibility.MethodInfo;
 import net.minecraft.launchwrapper.IClassTransformer;
+
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.ClassWriter;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.Type;
 import org.objectweb.asm.tree.*;
+
+import invtweaks.forge.asm.compatibility.CompatibilityConfigLoader;
+import invtweaks.forge.asm.compatibility.ContainerInfo;
+import invtweaks.forge.asm.compatibility.MethodInfo;
 
 import java.io.FileNotFoundException;
 import java.util.HashMap;

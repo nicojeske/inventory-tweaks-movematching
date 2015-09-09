@@ -1,8 +1,8 @@
 package invtweaks.containers;
 
-import invtweaks.api.container.ContainerSection;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.Slot;
+import invtweaks.api.container.ContainerSection;
 
 import java.util.HashMap;
 import java.util.List;
