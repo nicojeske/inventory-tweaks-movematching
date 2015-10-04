@@ -143,7 +143,7 @@ public class InvTweaksConfigManager {
             config.load();
             shortcutsHandler.loadShortcuts();
 
-            if(!config.getProperty(InvTweaksConfig.PROP_ENABLE_CONFIG_LOADED_MESSAGE).equals(InvTweaksConfig.VALUE_TRUE)) {
+            if(config.getProperty(InvTweaksConfig.PROP_ENABLE_CONFIG_LOADED_MESSAGE).equals(InvTweaksConfig.VALUE_TRUE)) {
                 InvTweaks.logInGameStatic("invtweaks.loadconfig.done");
             }
             showConfigErrors(config);
