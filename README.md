@@ -8,6 +8,8 @@ This is Inventory Tweaks for minecraft 1.7.10, but....  without this:
 
 Yup.  all it does, other than a few minor bugs backported to mc 1.7.10 by @asiekierka, is add a config option to remove that pesky 'loaded' message.
 
+It should be compleatly cross-compatable with outher users of inventory tweaks, both joining servers without this modification, and vice-versa.  It has also been tested on servers.
+
 ##Download:
 
 If you do not wish to build the project from source yourself, you can snag a pre-built copy to download:
