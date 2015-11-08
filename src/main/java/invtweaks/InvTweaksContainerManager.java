@@ -444,12 +444,16 @@ public class InvTweaksContainerManager/* extends InvTweaksObfuscation*/ {
         } else if(index < 0) {
             return -1;
         } else if(hasSection(section)) {
-            Slot slot = slotRefs.get(section).get(index);
-            if(slot != null) {
-                return InvTweaksObfuscation.getSlotNumber(slot);
-            } else {
-                return -1;
-            }
+            try{
+        		Slot slot = slotRefs.get(section).get(index);
+                if(slot != null) {
+                    return InvTweaksObfuscation.getSlotNumber(slot);
+                } else {
+                    return -1;
+                }
+        	} catch (IndexOutOfBoundsException e){
+        		return -1;
+        	}
         } else {
             return -1;
         }
