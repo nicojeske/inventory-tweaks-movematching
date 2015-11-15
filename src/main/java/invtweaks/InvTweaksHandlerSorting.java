@@ -166,9 +166,15 @@ public class InvTweaksHandlerSorting extends InvTweaksObfuscation {
 
                 // If the rule is strong enough to move the item and it matches the item, move it
                 if(hasToBeMoved(i) && lockPriorities[i] < rulePriority) {
-                    List<IItemTreeItem> fromItems = tree
-                            .getItems(Item.itemRegistry.getNameForObject(from.getItem()), from.getItemDamage());
-                    if(tree.matches(fromItems, rule.getKeyword())) {
+                	boolean shouldMoveItemToRule = false;
+                	if(rule.isNameRule()) {
+                		shouldMoveItemToRule = from.getDisplayName().equalsIgnoreCase(rule.getKeyword());
+                	} else {
+	                    List<IItemTreeItem> fromItems = tree
+	                            .getItems(Item.itemRegistry.getNameForObject(from.getItem()), from.getItemDamage());
+	                    shouldMoveItemToRule = tree.matches(fromItems, rule.getKeyword());
+                	}
+                    if(shouldMoveItemToRule) {
 
                         // Test preffered slots
                         int[] preferredSlots = rule.getPreferredSlots();
@@ -183,7 +189,7 @@ public class InvTweaksHandlerSorting extends InvTweaksObfuscation {
                                     break;
                                 } else {
                                     from = containerMgr.getItemStack(moveResult);
-                                    fromItems = tree.getItems(Item.itemRegistry.getNameForObject(from.getItem()), from.getItemDamage());
+                                    List<IItemTreeItem> fromItems = tree.getItems(Item.itemRegistry.getNameForObject(from.getItem()), from.getItemDamage());
                                     if(!tree.matches(fromItems, rule.getKeyword())) {
                                         break;
                                     } else {

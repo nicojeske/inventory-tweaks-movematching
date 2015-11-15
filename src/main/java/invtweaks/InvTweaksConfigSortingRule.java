@@ -21,6 +21,7 @@ public class InvTweaksConfigSortingRule implements Comparable<InvTweaksConfigSor
     private int priority;
     private int containerSize;
     private int containerRowSize;
+    private boolean isNameRule;
 
     public InvTweaksConfigSortingRule(InvTweaksItemTree tree, String constraint, String keyword, int containerSize,
                                       int containerRowSize) {
@@ -32,13 +33,18 @@ public class InvTweaksConfigSortingRule implements Comparable<InvTweaksConfigSor
         this.type = getRuleType(constraint, containerRowSize);
         this.preferredPositions = getRulePreferredPositions(constraint);
 
+        this.isNameRule = keyword.startsWith("\"") && keyword.endsWith("\"");
+        if(this.isNameRule) {
+        	this.keyword = this.keyword.substring(1,this.keyword.length()-1);
+        }
+        
         // Compute priority
         // 1st criteria : the rule type
         // 2st criteria : the keyword category depth
         // 3st criteria : the item order in a same category
 
         priority = type.getLowestPriority() + 100000 +
-                tree.getKeywordDepth(keyword) * 1000 - tree.getKeywordOrder(keyword);
+                ( this.isNameRule ? 100000 : tree.getKeywordDepth(keyword) * 1000 - tree.getKeywordOrder(keyword) );
 
     }
 
@@ -71,6 +77,10 @@ public class InvTweaksConfigSortingRule implements Comparable<InvTweaksConfigSor
         return priority;
     }
 
+    public boolean isNameRule() {
+    	return isNameRule;
+    }
+    
     /**
      * Compares rules priority : positive value means 'this' is of greater priority than o
      */

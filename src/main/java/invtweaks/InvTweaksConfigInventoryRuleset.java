@@ -3,8 +3,12 @@ package invtweaks;
 import org.apache.logging.log4j.Logger;
 
 import java.security.InvalidParameterException;
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 import java.util.Vector;
+
+import org.apache.commons.lang3.StringUtils;
 
 /**
  * Stores a whole configuration defined by rules. Several of them can be stored in the global configuration, as the mod
@@ -56,15 +60,27 @@ public class InvTweaksConfigInventoryRuleset {
     public String registerLine(String rawLine) throws InvalidParameterException {
 
         InvTweaksConfigSortingRule newRule;
-        String lineText = rawLine.replaceAll("[\\s]+", " ").toLowerCase();
-        String[] words = lineText.split(" ");
+        String[] quoteSplit = rawLine.split("\"");
+        List<String> wordsFlex = new ArrayList<String>();
+        for (int i = 0; i < quoteSplit.length; i++) {
+			if(i%2 == 0) {
+				String s = quoteSplit[i].replaceAll("^[\\s]+|[\\s]+$","").replaceAll("[\\s]+", " ").toLowerCase();
+				String[] wordsInSection = s.split(" ");
+				for (int j = 0; j < wordsInSection.length; j++) {
+					wordsFlex.add(wordsInSection[j]);
+				}
+			} else {
+				wordsFlex.add("\"" + quoteSplit[i] + "\"");
+			}
+		}
+        String lineText = StringUtils.join(wordsFlex, " ");
+        String[] words = wordsFlex.toArray(new String[wordsFlex.size()]);
 
         // Parse valid lines only
         if(words.length == 2) {
 
             // Standard rules format
-            if(lineText.matches("^([a-d]|[1-9]|[r]){1,2} [\\w]*$") || lineText
-                    .matches("^[a-d][1-9]-[a-d][1-9][rv]?[rv]? [\\w]*$")) {
+            if(words[0].matches("([a-d]|[1-9]|[r]){1,2}")) {
 
                 words[0] = words[0].toLowerCase();
                 words[1] = words[1];
@@ -119,7 +135,7 @@ public class InvTweaksConfigInventoryRuleset {
                     }
 
                     if(isValidKeyword) {
-                        newRule = new InvTweaksConfigSortingRule(tree, words[0], keyword.toLowerCase(),
+                        newRule = new InvTweaksConfigSortingRule(tree, words[0], (keyword.startsWith("\"") && keyword.endsWith("\"")) ? keyword : keyword.toLowerCase(),
                                                                  InvTweaksConst.INVENTORY_SIZE,
                                                                  InvTweaksConst.INVENTORY_ROW_SIZE);
                         rules.add(newRule);
