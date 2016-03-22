@@ -1021,7 +1021,7 @@ public class InvTweaks extends InvTweaksObfuscation {
     }
 
     private String buildlogString(Level level, String message, Exception e) {
-        if(e != null) {
+        if(e != null && e.getStackTrace != null && e.getStackTrace().length > 0) {
             StackTraceElement exceptionLine = e.getStackTrace()[0];
             if(exceptionLine != null && exceptionLine.getFileName() != null) {
                 return buildlogString(level, message) + ": " + e.getMessage() + " (l" + exceptionLine.getLineNumber() +
