@@ -107,22 +107,34 @@ public class InvTweaksContainerManager/* extends InvTweaksObfuscation*/ {
 
         // Mod support -- some mods play tricks with slots to display an item but not let it be interacted with.
         // (Specifically forestry backpack UI)
-        if(destIndex != DROP_SLOT) {
-            Slot destSlot = getSlot(destSection, destIndex);
-            if(!destSlot.isItemValid(srcStack)) {
-                return false;
+        try{
+        	if(destIndex != DROP_SLOT) {
+                Slot destSlot = getSlot(destSection, destIndex);
+                if(!destSlot.isItemValid(srcStack)) {
+                    return false;
+                }
             }
+        	
+        } catch (NullPointerException e){
+        	return false;
         }
+        
 
 
         // Put hold item down
         if(InvTweaks.getInstance().getHeldStack() != null) {
             int firstEmptyIndex = getFirstEmptyIndex(ContainerSection.INVENTORY);
-            if(firstEmptyIndex != -1) {
-                leftClick(ContainerSection.INVENTORY, firstEmptyIndex);
-            } else {
-                return false;
+            try{
+            	if(firstEmptyIndex != -1) {
+                    leftClick(ContainerSection.INVENTORY, firstEmptyIndex);
+                } else {
+                    return false;
+                }
+            	
+            } catch (NullPointerException e){
+            	return false;
             }
+            
         }
 
         // Use intermediate slot if we have to swap tools, maps, etc.
@@ -331,19 +343,30 @@ public class InvTweaksContainerManager/* extends InvTweaksObfuscation*/ {
      * @return true if the specified slot exists and is empty, false otherwise.
      */
     public boolean isSlotEmpty(ContainerSection section, int slot) {
-        if(hasSection(section)) {
-            return getItemStack(section, slot) == null;
-        } else {
-            return false;
+        try{
+        	if(hasSection(section)) {
+                return getItemStack(section, slot) == null;
+            } else {
+                return false;
+            }
         }
+        catch(IndexOutOfBoundsException e){
+        	return false;
+        }
+    	
     }
 
     public Slot getSlot(ContainerSection section, int index) {
-        List<Slot> slots = slotRefs.get(section);
-        if(slots != null) {
-            return slots.get(index);
-        } else {
-            return null;
+        try{
+        	List<Slot> slots = slotRefs.get(section);
+        	if(slots != null) {
+                return slots.get(index);
+            } else {
+                return null;
+            }
+        }
+        catch(IndexOutOfBoundsException e){
+        	return null;
         }
     }
 
@@ -444,12 +467,17 @@ public class InvTweaksContainerManager/* extends InvTweaksObfuscation*/ {
         } else if(index < 0) {
             return -1;
         } else if(hasSection(section)) {
-            Slot slot = slotRefs.get(section).get(index);
-            if(slot != null) {
-                return InvTweaksObfuscation.getSlotNumber(slot);
-            } else {
-                return -1;
-            }
+        	try{
+        		Slot slot = slotRefs.get(section).get(index);
+                if(slot != null) {
+                    return InvTweaksObfuscation.getSlotNumber(slot);
+                } else {
+                    return -1;
+                }
+        	} catch (IndexOutOfBoundsException e){
+        		return -1;
+        	}
+            
         } else {
             return -1;
         }
