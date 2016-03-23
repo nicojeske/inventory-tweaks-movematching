@@ -1,9 +1,10 @@
 package invtweaks;
 
 
+import org.apache.logging.log4j.Logger;
+
 import invtweaks.api.IItemTreeCategory;
 import invtweaks.api.IItemTreeItem;
-import org.apache.logging.log4j.Logger;
 
 import java.util.*;
 

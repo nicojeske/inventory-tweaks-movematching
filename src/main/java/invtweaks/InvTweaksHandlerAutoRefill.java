@@ -1,16 +1,18 @@
 package invtweaks;
 
-import invtweaks.api.IItemTreeItem;
-import invtweaks.api.container.ContainerSection;
-import invtweaks.forge.InvTweaksMod;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.PositionedSoundRecord;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
+
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.Logger;
+
+import invtweaks.api.IItemTreeItem;
+import invtweaks.api.container.ContainerSection;
+import invtweaks.forge.InvTweaksMod;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -96,14 +98,14 @@ public class InvTweaksHandlerAutoRefill extends InvTweaksObfuscation {
                     candidateStack = container.getItemStack(i);
                     if(candidateStack != null) {
                         List<IItemTreeItem> candidateItems = tree
-                                .getItems(Item.itemRegistry.getNameForObject(candidateStack.getItem()), candidateStack.getItemDamage());
+                                .getItems(Item.itemRegistry.getNameForObject(candidateStack.getItem()), candidateStack.getCurrentDurability());
                         if(tree.matches(candidateItems, rule.getKeyword())) {
                             // Choose tool of highest damage value
                             if(candidateStack.getMaxStackSize() == 1) {
                                 // Item
-                                if((replacementStack == null || candidateStack.getItemDamage() > replacementStack
-                                        .getItemDamage()) && (!refillBeforeBreak || candidateStack.getMaxDamage() - candidateStack
-                                        .getItemDamage() > config
+                                if((replacementStack == null || candidateStack.getCurrentDurability() > replacementStack
+                                        .getCurrentDurability()) && (!refillBeforeBreak || candidateStack.getMaxDurability() - candidateStack
+                                        .getCurrentDurability() > config
                                         .getIntProperty(InvTweaksConfig.PROP_AUTO_REFILL_DAMAGE_THRESHHOLD))) {
                                     replacementStack = candidateStack;
                                     replacementStackSlot = i;
@@ -126,7 +128,7 @@ public class InvTweaksHandlerAutoRefill extends InvTweaksObfuscation {
                 candidateStack = container.getItemStack(i);
                 if(candidateStack != null &&
                         ObjectUtils.equals(Item.itemRegistry.getNameForObject(candidateStack.getItem()), wantedId) &&
-                        candidateStack.getItemDamage() == wantedDamage) {
+                        candidateStack.getCurrentDurability() == wantedDamage) {
                     replacementStack = candidateStack;
                     replacementStackSlot = i;
                     break;
@@ -199,7 +201,7 @@ public class InvTweaksHandlerAutoRefill extends InvTweaksObfuscation {
                         if(containerMgr.move(targetedSlot, i) || containerMgr.move(i, targetedSlot)) {
                             if(!config.getProperty(InvTweaksConfig.PROP_ENABLE_SOUNDS)
                                       .equals(InvTweaksConfig.VALUE_FALSE)) {
-                                mc.getSoundHandler().playSound(PositionedSoundRecord.func_147674_a(
+                                mc.getSoundHandler().playSound(PositionedSoundRecord.createPositionedSoundRecord(
                                         new ResourceLocation("mob.chicken.plop"), 1.0F));
                             }
                             // If item are swapped (like for mushroom soups),

@@ -1,8 +1,10 @@
 package invtweaks;
 
-import invtweaks.api.container.ContainerSection;
 import net.minecraft.client.Minecraft;
+
 import org.apache.logging.log4j.Logger;
+
+import invtweaks.api.container.ContainerSection;
 
 import java.util.concurrent.TimeoutException;
 
