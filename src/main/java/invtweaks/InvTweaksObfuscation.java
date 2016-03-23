@@ -81,7 +81,7 @@ public class InvTweaksObfuscation {
     }
 
     public FontRenderer getFontRenderer() {
-        return mc.fontRendererObj;
+        return mc.fontRenderer;
     }
 
     public void displayGuiScreen(GuiScreen parentScreen) {
@@ -170,7 +170,7 @@ public class InvTweaksObfuscation {
     public boolean areItemsStackable(ItemStack itemStack1, ItemStack itemStack2) {
         return itemStack1 != null && itemStack2 != null && itemStack1.isItemEqual(itemStack2) &&
                 itemStack1.isStackable() &&
-                (!itemStack1.getHasSubtypes() || itemStack1.getCurrentDurability() == itemStack2.getCurrentDurability()) &&
+                (!itemStack1.getHasSubtypes() || itemStack1.getItemDamage() == itemStack2.getItemDamage()) &&
                 ItemStack.areItemStackTagsEqual(itemStack1, itemStack2);
     }
 

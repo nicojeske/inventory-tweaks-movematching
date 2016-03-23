@@ -191,7 +191,7 @@ public class InvTweaksHandlerSorting extends InvTweaksObfuscation {
                                     break;
                                 } else {
                                     from = containerMgr.getItemStack(moveResult);
-                                    List<IItemTreeItem> fromItems = tree.getItems(Item.itemRegistry.getNameForObject(from.getItem()), from.getItemDamage());.getNameForObject(from.getItem()), from.getCurrentDurability());
+                                    List<IItemTreeItem> fromItems = tree.getItems(Item.itemRegistry.getNameForObject(from.getItem()), from.getItemDamage());
                                     if(!tree.matches(fromItems, rule.getKeyword())) {
                                         break;
                                     } else {
@@ -299,7 +299,7 @@ public class InvTweaksHandlerSorting extends InvTweaksObfuscation {
                                 // ItemArmor
                                 // ItemArmor
                                 if(armorLevel < fromItemArmor.damageReduceAmount || (armorLevel == fromItemArmor.damageReduceAmount && slot
-                                        .getStack().getCurrentDurability() < from.getCurrentDurability())) {
+                                        .getStack().getItemDamage() < from.getItemDamage())) {
                                     move = true;
                                 }
                             } else {
@@ -324,7 +324,7 @@ public class InvTweaksHandlerSorting extends InvTweaksObfuscation {
         for(int i = 0; i < size; i++) {
             ItemStack stack = containerMgr.getItemStack(i);
             if(stack != null) {
-                Pair<String, Integer> item = Pair.of(Item.itemRegistry.getNameForObject(stack.getItem()), stack.getCurrentDurability());
+                Pair<String, Integer> item = Pair.of(Item.itemRegistry.getNameForObject(stack.getItem()), stack.getItemDamage());
                 int[] count = itemCounts.get(item);
                 if(count == null) {
                     int[] newCount = {stack.stackSize, 1};
@@ -350,7 +350,7 @@ public class InvTweaksHandlerSorting extends InvTweaksObfuscation {
                 LinkedList<Integer> largeStacks = new LinkedList<Integer>();
                 for(int i = 0; i < size; i++) {
                     ItemStack stack = containerMgr.getItemStack(i);
-                    if(stack != null && Pair.of(Item.itemRegistry.getNameForObject(stack.getItem()), stack.getCurrentDurability())
+                    if(stack != null && Pair.of(Item.itemRegistry.getNameForObject(stack.getItem()), stack.getItemDamage())
                                               .equals(item)) {
                         int stackSize = stack.stackSize;
                         if(stackSize > numPerSlot) {
@@ -567,7 +567,7 @@ public class InvTweaksHandlerSorting extends InvTweaksObfuscation {
     }
 
     private int getItemOrder(ItemStack itemStack) {
-        List<IItemTreeItem> items = tree.getItems(Item.itemRegistry.getNameForObject(itemStack.getItem()), itemStack.getCurrentDurability());
+        List<IItemTreeItem> items = tree.getItems(Item.itemRegistry.getNameForObject(itemStack.getItem()), itemStack.getItemDamage());
         return (items != null && items.size() > 0) ? items.get(0).getOrder() : Integer.MAX_VALUE;
     }
 
@@ -711,10 +711,10 @@ public class InvTweaksHandlerSorting extends InvTweaksObfuscation {
             if(stack != null) {
                 // TODO: ID Changes (Leaving as-is for now because WHY)
                 int itemSearchKey = Item.getIdFromItem(stack.getItem()) * 100000 + ((stack
-                        .getMaxStackSize() != 1) ? stack.getCurrentDurability() : 0);
+                        .getMaxStackSize() != 1) ? stack.getItemDamage() : 0);
                 IItemTreeItem item = itemSearch.get(itemSearchKey);
                 if(item == null) {
-                    item = tree.getItems(Item.itemRegistry.getNameForObject(stack.getItem()), stack.getCurrentDurability()).get(0);
+                    item = tree.getItems(Item.itemRegistry.getNameForObject(stack.getItem()), stack.getItemDamage()).get(0);
                     itemSearch.put(itemSearchKey, item);
                     stats.put(item, 1);
                 } else {

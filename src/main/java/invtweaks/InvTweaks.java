@@ -172,7 +172,7 @@ public class InvTweaks extends InvTweaksObfuscation {
             ItemStack currentStack = getFocusedStack();
 
             storedStackId = (currentStack == null) ? null : Item.itemRegistry.getNameForObject(currentStack.getItem());
-            storedStackDamage = (currentStack == null) ? 0 : currentStack.getCurrentDurability();
+            storedStackDamage = (currentStack == null) ? 0 : currentStack.getItemDamage();
             if(!wasInGUI) {
                 wasInGUI = true;
             }
@@ -241,7 +241,7 @@ public class InvTweaks extends InvTweaksObfuscation {
                 IItemTree tree = config.getTree();
                 ItemStack stack = containerMgr.getItemStack(currentSlot);
 
-                List<IItemTreeItem> items = tree.getItems(Item.itemRegistry.getNameForObject(stack.getItem()), stack.getCurrentDurability());
+                List<IItemTreeItem> items = tree.getItems(Item.itemRegistry.getNameForObject(stack.getItem()), stack.getItemDamage());
                 for(InvTweaksConfigSortingRule rule : config.getRules()) {
                     if(tree.matches(items, rule.getKeyword())) {
                         for(int slot : rule.getPreferredSlots()) {
@@ -350,11 +350,11 @@ public class InvTweaks extends InvTweaksObfuscation {
 
                         if(iEnchMaxId == jEnchMaxId) {
                             if(iEnchMaxLvl == jEnchMaxLvl) {
-                                if(i.getCurrentDurability() != j.getCurrentDurability()) {
+                                if(i.getItemDamage() != j.getItemDamage()) {
                                     if(i.isItemStackDamageable()) {
-                                        return j.getCurrentDurability() - i.getCurrentDurability();
+                                        return j.getItemDamage() - i.getItemDamage();
                                     } else {
-                                        return i.getCurrentDurability() - j.getCurrentDurability();
+                                        return i.getItemDamage() - j.getItemDamage();
                                     }
                                 } else {
                                     return j.stackSize - i.stackSize;
@@ -614,7 +614,7 @@ public class InvTweaks extends InvTweaksObfuscation {
 
         String currentStackId = (currentStack == null) ? null : Item.itemRegistry.getNameForObject(
                 currentStack.getItem());
-        int currentStackDamage = (currentStack == null) ? 0 : currentStack.getCurrentDurability();
+        int currentStackDamage = (currentStack == null) ? 0 : currentStack.getItemDamage();
         int focusedSlot = getFocusedSlot() + 27; // Convert to container slots index
         InvTweaksConfig config = cfgManager.getConfig();
 
@@ -638,7 +638,7 @@ public class InvTweaks extends InvTweaksObfuscation {
                 }
             } else {
                 // Item
-                int itemMaxDamage = currentStack.getMaxDurability();
+                int itemMaxDamage = currentStack.getMaxDamage();
                 int autoRefillThreshhold = config.getIntProperty(InvTweaksConfig.PROP_AUTO_REFILL_DAMAGE_THRESHHOLD);
                 if(canToolBeReplaced(currentStackDamage, itemMaxDamage, autoRefillThreshhold) && config
                         .getProperty(InvTweaksConfig.PROP_AUTO_REFILL_BEFORE_BREAK)
@@ -946,7 +946,7 @@ public class InvTweaks extends InvTweaksObfuscation {
 
     private int getItemOrder(ItemStack itemStack) {
         List<IItemTreeItem> items = cfgManager.getConfig().getTree().getItems(Item.itemRegistry.getNameForObject(itemStack.getItem()),
-                                                                              itemStack.getCurrentDurability());
+                                                                              itemStack.getItemDamage());
         return (items != null && items.size() > 0) ? items.get(0).getOrder() : Integer.MAX_VALUE;
     }
 
@@ -1018,12 +1018,12 @@ public class InvTweaks extends InvTweaksObfuscation {
         if(!cfgManager.getConfig().getProperty(InvTweaksConfig.PROP_ENABLE_SOUNDS)
                       .equals(InvTweaksConfig.VALUE_FALSE)) {
             mc.getSoundHandler()
-              .playSound(PositionedSoundRecord.createPositionedSoundRecord(new ResourceLocation("gui.button.press"), 1.0F));
-        }
-    }
+              .playSound(PositionedSoundRecord.func_147674_a(new ResourceLocation("gui.button.press"), 1.0F));
+		}
+	}
 
     private String buildlogString(Level level, String message, Exception e) {
-        if(e != null && e.getStackTrace != null && e.getStackTrace().length > 0) {
+        if(e != null && e.getStackTrace() != null && e.getStackTrace().length > 0) {
             StackTraceElement exceptionLine = e.getStackTrace()[0];
             if(exceptionLine != null && exceptionLine.getFileName() != null) {
                 return buildlogString(level, message) + ": " + e.getMessage() + " (l" + exceptionLine.getLineNumber() +

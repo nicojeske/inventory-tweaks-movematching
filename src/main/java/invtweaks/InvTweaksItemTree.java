@@ -331,7 +331,7 @@ public class InvTweaksItemTree implements IItemTree {
         for(ItemStack i : OreDictionary.getOres(oreName)) {
             if(i != null) {
                 addItem(category,
-                        new InvTweaksItemTreeItem(name, Item.itemRegistry.getNameForObject(i.getItem()), i.getCurrentDurability(), order));
+                        new InvTweaksItemTreeItem(name, Item.itemRegistry.getNameForObject(i.getItem()), i.getItemDamage(), order));
             } else {
                 log.warn(String.format("An OreDictionary entry for %s is null", oreName));
             }
@@ -347,7 +347,7 @@ public class InvTweaksItemTree implements IItemTree {
             if(ore.oreName.equals(ev.Name)) {
                 if(ev.Ore.getItem() != null) {
                     addItem(ore.category, new InvTweaksItemTreeItem(ore.name, Item.itemRegistry.getNameForObject(ev.Ore.getItem()),
-                            ev.Ore.getCurrentDurability(), ore.order));
+                            ev.Ore.getItemDamage(), ore.order));
                 } else {
                     log.warn(String.format("An OreDictionary entry for %s is null", ev.Name));
                 }
