@@ -1,10 +1,10 @@
 package invtweaks;
 
-import invtweaks.api.container.ContainerSection;
 import net.minecraft.client.Minecraft;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
+import invtweaks.api.container.ContainerSection;
 
 import java.util.List;
 import java.util.concurrent.TimeoutException;

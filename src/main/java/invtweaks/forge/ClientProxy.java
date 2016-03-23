@@ -1,5 +1,11 @@
 package invtweaks.forge;
 
+import invtweaks.*;
+import invtweaks.api.IItemTreeListener;
+import invtweaks.api.SortingMethod;
+import invtweaks.api.container.ContainerSection;
+import invtweaks.network.packets.ITPacketClick;
+import invtweaks.network.packets.ITPacketSortComplete;
 import cpw.mods.fml.client.FMLClientHandler;
 import cpw.mods.fml.client.registry.ClientRegistry;
 import cpw.mods.fml.common.FMLCommonHandler;
@@ -9,12 +15,6 @@ import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.PlayerEvent;
 import cpw.mods.fml.common.network.FMLNetworkEvent;
 import cpw.mods.fml.relauncher.Side;
-import invtweaks.*;
-import invtweaks.api.IItemTreeListener;
-import invtweaks.api.SortingMethod;
-import invtweaks.api.container.ContainerSection;
-import invtweaks.network.packets.ITPacketClick;
-import invtweaks.network.packets.ITPacketSortComplete;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.multiplayer.PlayerControllerMP;
@@ -26,6 +26,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.player.ItemTooltipEvent;
+
 import org.lwjgl.input.Keyboard;
 
 public class ClientProxy extends CommonProxy {

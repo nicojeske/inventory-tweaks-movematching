@@ -1,9 +1,9 @@
 package invtweaks.forge;
 
 import cpw.mods.fml.client.IModGuiFactory;
-import invtweaks.InvTweaksGuiSettings;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;
+import invtweaks.InvTweaksGuiSettings;
 
 import java.util.Set;
 

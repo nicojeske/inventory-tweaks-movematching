@@ -1,12 +1,14 @@
 package invtweaks;
 
-import invtweaks.forge.InvTweaksMod;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.util.StatCollector;
+
 import org.apache.logging.log4j.Logger;
 import org.lwjgl.util.Point;
+
+import invtweaks.forge.InvTweaksMod;
 
 import java.awt.*;
 import java.util.List;

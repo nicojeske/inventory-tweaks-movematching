@@ -1,3 +1,4 @@
+package invtweaks.forge;
 /*package invtweaks.forge;
 
 import cpw.mods.fml.common.network.IConnectionHandler;

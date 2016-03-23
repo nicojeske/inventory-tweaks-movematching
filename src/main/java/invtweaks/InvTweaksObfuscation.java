@@ -3,7 +3,6 @@ package invtweaks;
 import cpw.mods.fml.client.FMLClientHandler;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-import invtweaks.api.container.ContainerSection;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.GuiButton;
@@ -24,8 +23,11 @@ import net.minecraft.item.ItemArmor;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.ResourceLocation;
+
 import org.apache.logging.log4j.Logger;
 import org.lwjgl.input.Mouse;
+
+import invtweaks.api.container.ContainerSection;
 
 import java.lang.reflect.Field;
 import java.util.HashMap;
@@ -79,7 +81,7 @@ public class InvTweaksObfuscation {
     }
 
     public FontRenderer getFontRenderer() {
-        return mc.fontRenderer;
+        return mc.fontRendererObj;
     }
 
     public void displayGuiScreen(GuiScreen parentScreen) {
@@ -168,7 +170,7 @@ public class InvTweaksObfuscation {
     public boolean areItemsStackable(ItemStack itemStack1, ItemStack itemStack2) {
         return itemStack1 != null && itemStack2 != null && itemStack1.isItemEqual(itemStack2) &&
                 itemStack1.isStackable() &&
-                (!itemStack1.getHasSubtypes() || itemStack1.getItemDamage() == itemStack2.getItemDamage()) &&
+                (!itemStack1.getHasSubtypes() || itemStack1.getCurrentDurability() == itemStack2.getCurrentDurability()) &&
                 ItemStack.areItemStackTagsEqual(itemStack1, itemStack2);
     }
 

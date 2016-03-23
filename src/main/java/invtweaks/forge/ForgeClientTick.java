@@ -1,9 +1,9 @@
 package invtweaks.forge;
 
+import invtweaks.InvTweaks;
 import cpw.mods.fml.client.FMLClientHandler;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.TickEvent;
-import invtweaks.InvTweaks;
 import net.minecraft.client.Minecraft;
 
 public class ForgeClientTick {
