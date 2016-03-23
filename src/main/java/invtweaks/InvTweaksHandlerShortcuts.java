@@ -372,7 +372,8 @@ public class InvTweaksHandlerShortcuts extends InvTweaksObfuscation {
                                 case ONE_STACK: {
                                     Slot slot = container.getSlot(shortcut.fromSection, shortcut.fromIndex);
                                     if(shortcut.fromSection != ContainerSection.CRAFTING_OUT && shortcut.toSection != ContainerSection.ENCHANTMENT) {
-                                        while(slot.getHasStack() && toIndex != -1) {
+                                        int tries = 0;
+                                    	while(slot.getHasStack() && toIndex != -1 && tries < maxTries) {
                                             success = container
                                                     .move(shortcut.fromSection, shortcut.fromIndex, shortcut.toSection,
                                                           toIndex);
@@ -380,6 +381,7 @@ public class InvTweaksHandlerShortcuts extends InvTweaksObfuscation {
                                             toIndex = (success ||
                                                     (shortcut.action == ShortcutSpecification.Action.DROP) ||
                                                     newIndex != toIndex) ? newIndex : -1; // Needed when we can't put items in the target slot
+                                            tries++;
                                         }
                                     } else {
                                         // Move only once, since the crafting output might be refilled
@@ -425,25 +427,32 @@ public class InvTweaksHandlerShortcuts extends InvTweaksObfuscation {
     private void dropAll(ShortcutConfig shortcut, ItemStack stackToMatch) {
         for(Slot slot : container.getSlots(shortcut.fromSection)) {
             if(slot.getHasStack() && (stackToMatch == null || areSameItemType(stackToMatch, slot.getStack()))) {
+            	int tries = 0;
                 int fromIndex = container.getSlotIndex(getSlotNumber(slot));
-                while(slot.getHasStack()) {
+                while(slot.getHasStack() && tries < maxTries) {
                     container.drop(shortcut.fromSection, fromIndex);
+                    tries++;
                 }
             }
         }
     }
 
+    private final int maxTries = 10;
+    
     private void moveAll(ShortcutConfig shortcut, ItemStack stackToMatch) throws TimeoutException {
         int toIndex = getNextTargetIndex(shortcut), newIndex;
         boolean success;
         for(Slot slot : container.getSlots(shortcut.fromSection)) {
             if(slot.getHasStack() && (stackToMatch == null || areSameItemType(stackToMatch, slot.getStack()))) {
+            	int tries = 0;
                 int fromIndex = container.getSlotIndex(getSlotNumber(slot));
-                while(slot.getHasStack() && toIndex != -1 &&
+                while(slot.getHasStack() && toIndex != -1 && tries < maxTries &&
                         !(shortcut.fromSection == shortcut.toSection && fromIndex == toIndex)) {
                     success = container.move(shortcut.fromSection, fromIndex, shortcut.toSection, toIndex);
                     newIndex = getNextTargetIndex(shortcut);
-                    toIndex = (success && ((shortcut.action == ShortcutSpecification.Action.DROP) || newIndex != toIndex)) ? newIndex : -1; // Needed when we can't put items in the target slot
+
+                    toIndex = (success || (shortcut.action == ShortcutSpecification.Action.DROP) || newIndex != toIndex) ? newIndex : -1; // Needed when we can't put items in the target slot
+                    tries++;
                 }
             }
             if(toIndex == -1) {

@@ -133,8 +133,12 @@ public class InvTweaksItemTree implements IItemTree {
     @Override
     public boolean isKeywordValid(String keyword) {
 
+    	if(keyword.startsWith("\"") && keyword.endsWith("\"")) {
+    		return true;
+    	}
+    	
         // Is the keyword an item?
-        if(containsItem(keyword)) {
+        else if(containsItem(keyword)) {
             return true;
         }
 
