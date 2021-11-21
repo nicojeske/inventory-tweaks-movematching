@@ -1,10 +1,10 @@
 [
 {
-    "modid": "inventorytweaks",
-    "name": "Inventory Tweaks",
+    "modid": "${modId}",
+    "name": "${modName}",
     "description": "Tweaks to inventory handling for ease of use, including sorting and automatic replacement of broken tools or exhausted stacks of items.",
-    "mcversion": "$mcversion",
-    "version": "$version",
+    "mcversion": "${modVersion}",
+    "version": "${minecraftVersion}",
     "url": "https://github.com/Kobata/inventory-tweaks",
     "updateUrl": "",
     "authors": [

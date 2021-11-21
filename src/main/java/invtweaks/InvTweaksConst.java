@@ -12,7 +12,7 @@ import java.util.Properties;
 public class InvTweaksConst {
 
     // Mod version
-    public static final String MOD_VERSION = "@VERSION@";
+    public static final String MOD_VERSION = "GRADLETOKEN_VERSION";
 
     // Mod tree version
     // Change only when the tree evolves significantly enough to need to override all configs

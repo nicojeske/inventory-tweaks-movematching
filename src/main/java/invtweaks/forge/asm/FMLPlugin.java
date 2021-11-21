@@ -16,7 +16,7 @@ public class FMLPlugin implements IFMLLoadingPlugin {
 
     @Override
     public String getAccessTransformerClass() {
-        return "invtweaks.forge.asm.ITAccessTransformer";
+        return null;
     }
 
     @Override
