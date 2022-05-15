@@ -1,5 +1,6 @@
 package invtweaks.forge;
 
+import invtweaks.InvTweaksConst;
 import invtweaks.api.IItemTreeListener;
 import invtweaks.api.InvTweaksAPI;
 import invtweaks.api.SortingMethod;
@@ -21,8 +22,11 @@ import net.minecraft.item.ItemStack;
  */
 @Mod(modid = "inventorytweaks",
      dependencies = "required-after:FML@[7.2.0,);required-after:Forge@[10.12.1,)",
-        acceptableRemoteVersions="*",
-        guiFactory="invtweaks.forge.ModGuiFactory")
+     acceptableRemoteVersions="*",
+     guiFactory="invtweaks.forge.ModGuiFactory",
+     acceptedMinecraftVersions = "[1.7.2,1.7.10]",
+     name = "Inventory Tweaks",
+     version = InvTweaksConst.MOD_VERSION)
 public class InvTweaksMod implements InvTweaksAPI {
     @Mod.Instance
     public static InvTweaksMod instance;
