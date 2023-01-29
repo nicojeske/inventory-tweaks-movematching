@@ -1,16 +1,18 @@
 package invtweaks.containers;
 
-import net.minecraft.inventory.Container;
-import net.minecraft.inventory.Slot;
-import invtweaks.InvTweaksConst;
-import invtweaks.api.container.ContainerSection;
-
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import net.minecraft.inventory.Container;
+import net.minecraft.inventory.Slot;
+
+import invtweaks.InvTweaksConst;
+import invtweaks.api.container.ContainerSection;
+
 @SuppressWarnings("unchecked")
 public class VanillaSlotMaps {
+
     public static Map<ContainerSection, List<Slot>> containerPlayerSlots(Container container) {
         Map<ContainerSection, List<Slot>> slotRefs = new HashMap<ContainerSection, List<Slot>>();
 
@@ -21,34 +23,26 @@ public class VanillaSlotMaps {
         return slotRefs;
     }
 
-    /* FIXME: Cannot compile until SpecialSource update
-    @SideOnly(Side.CLIENT)
-    public static boolean containerCreativeIsInventory(GuiContainerCreative.ContainerCreative container) {
-        GuiScreen currentScreen = FMLClientHandler.instance().getClient().currentScreen;
-        if(currentScreen instanceof GuiContainerCreative) {
-            return ((GuiContainerCreative) currentScreen).getCurrentTabIndex() == CreativeTabs.tabInventory
-                                                                                              .getTabIndex();
-        } else {
-            return false;
-        }
-    }
-    @SideOnly(Side.CLIENT)
-    public static Map<ContainerSection, List<Slot>> containerCreativeSlots(GuiContainerCreative.ContainerCreative container) {
-        Map<ContainerSection, List<Slot>> slotRefs = new HashMap<ContainerSection, List<Slot>>();
-
-        slotRefs.put(ContainerSection.ARMOR, container.inventorySlots.subList(5, 9));
-        slotRefs.put(ContainerSection.INVENTORY, container.inventorySlots.subList(9, 45));
-        slotRefs.put(ContainerSection.INVENTORY_NOT_HOTBAR, container.inventorySlots.subList(9, 36));
-        slotRefs.put(ContainerSection.INVENTORY_HOTBAR, container.inventorySlots.subList(36, 45));
-
-        return slotRefs;
-    }
-    */
+    /*
+     * FIXME: Cannot compile until SpecialSource update
+     * @SideOnly(Side.CLIENT) public static boolean containerCreativeIsInventory(GuiContainerCreative.ContainerCreative
+     * container) { GuiScreen currentScreen = FMLClientHandler.instance().getClient().currentScreen; if(currentScreen
+     * instanceof GuiContainerCreative) { return ((GuiContainerCreative) currentScreen).getCurrentTabIndex() ==
+     * CreativeTabs.tabInventory .getTabIndex(); } else { return false; } }
+     * @SideOnly(Side.CLIENT) public static Map<ContainerSection, List<Slot>>
+     * containerCreativeSlots(GuiContainerCreative.ContainerCreative container) { Map<ContainerSection, List<Slot>>
+     * slotRefs = new HashMap<ContainerSection, List<Slot>>(); slotRefs.put(ContainerSection.ARMOR,
+     * container.inventorySlots.subList(5, 9)); slotRefs.put(ContainerSection.INVENTORY,
+     * container.inventorySlots.subList(9, 45)); slotRefs.put(ContainerSection.INVENTORY_NOT_HOTBAR,
+     * container.inventorySlots.subList(9, 36)); slotRefs.put(ContainerSection.INVENTORY_HOTBAR,
+     * container.inventorySlots.subList(36, 45)); return slotRefs; }
+     */
     public static Map<ContainerSection, List<Slot>> containerChestDispenserSlots(Container container) {
         Map<ContainerSection, List<Slot>> slotRefs = new HashMap<ContainerSection, List<Slot>>();
 
-        slotRefs.put(ContainerSection.CHEST, container.inventorySlots.subList(0, container.inventorySlots
-                                                                                          .size() - InvTweaksConst.INVENTORY_SIZE));
+        slotRefs.put(
+                ContainerSection.CHEST,
+                container.inventorySlots.subList(0, container.inventorySlots.size() - InvTweaksConst.INVENTORY_SIZE));
 
         return slotRefs;
     }
@@ -93,10 +87,11 @@ public class VanillaSlotMaps {
 
         int size = container.inventorySlots.size();
 
-        if(size >= InvTweaksConst.INVENTORY_SIZE) {
+        if (size >= InvTweaksConst.INVENTORY_SIZE) {
             // Assuming the container ends with the inventory, just like all vanilla containers.
-            slotRefs.put(ContainerSection.CHEST,
-                         container.inventorySlots.subList(0, size - InvTweaksConst.INVENTORY_SIZE));
+            slotRefs.put(
+                    ContainerSection.CHEST,
+                    container.inventorySlots.subList(0, size - InvTweaksConst.INVENTORY_SIZE));
         } else {
             slotRefs.put(ContainerSection.CHEST, container.inventorySlots.subList(0, size));
         }

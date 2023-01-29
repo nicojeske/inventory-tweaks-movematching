@@ -1,15 +1,17 @@
 package invtweaks.containers;
 
-import net.minecraft.inventory.Container;
-import net.minecraft.inventory.Slot;
-import invtweaks.api.container.ContainerSection;
-
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import net.minecraft.inventory.Container;
+import net.minecraft.inventory.Slot;
+
+import invtweaks.api.container.ContainerSection;
+
 @SuppressWarnings("unchecked")
 public class CompatibilitySlotMaps {
+
     public static Map<ContainerSection, List<Slot>> ee3PortableCraftingSlots(Container container) {
         Map<ContainerSection, List<Slot>> slotRefs = new HashMap<ContainerSection, List<Slot>>();
 

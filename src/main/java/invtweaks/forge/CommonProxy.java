@@ -1,5 +1,11 @@
 package invtweaks.forge;
 
+import java.util.EnumMap;
+
+import net.minecraft.client.multiplayer.PlayerControllerMP;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.ItemStack;
+
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.event.FMLPostInitializationEvent;
@@ -11,9 +17,6 @@ import cpw.mods.fml.common.network.FMLOutboundHandler;
 import cpw.mods.fml.common.network.NetworkRegistry;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-import net.minecraft.client.multiplayer.PlayerControllerMP;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.ItemStack;
 import invtweaks.InvTweaksConst;
 import invtweaks.api.IItemTreeListener;
 import invtweaks.api.InvTweaksAPI;
@@ -25,46 +28,37 @@ import invtweaks.network.handlers.LoginMessageHandler;
 import invtweaks.network.handlers.SortingCompleteMessageHandler;
 import invtweaks.network.packets.ITPacketLogin;
 
-import java.util.EnumMap;
-
 public class CommonProxy implements InvTweaksAPI {
+
     protected static EnumMap<Side, FMLEmbeddedChannel> invtweaksChannel;
 
-    public void preInit(FMLPreInitializationEvent e) {
-    }
+    public void preInit(FMLPreInitializationEvent e) {}
 
     public void init(FMLInitializationEvent e) {
-        invtweaksChannel = NetworkRegistry.INSTANCE
-                                          .newChannel(InvTweaksConst.INVTWEAKS_CHANNEL, new ITMessageToMessageCodec(),
-                                                      new ClickMessageHandler(), new LoginMessageHandler(),
-                                                      new SortingCompleteMessageHandler());
-
+        invtweaksChannel = NetworkRegistry.INSTANCE.newChannel(
+                InvTweaksConst.INVTWEAKS_CHANNEL,
+                new ITMessageToMessageCodec(),
+                new ClickMessageHandler(),
+                new LoginMessageHandler(),
+                new SortingCompleteMessageHandler());
 
         FMLCommonHandler.instance().bus().register(this);
     }
 
-    public void postInit(FMLPostInitializationEvent e) {
-    }
+    public void postInit(FMLPostInitializationEvent e) {}
 
-    public void setServerAssistEnabled(boolean enabled) {
-    }
+    public void setServerAssistEnabled(boolean enabled) {}
 
-    public void setServerHasInvTweaks(boolean hasInvTweaks) {
-    }
+    public void setServerHasInvTweaks(boolean hasInvTweaks) {}
 
-    /* Action values:
-     * 0: Standard Click
-     * 1: Shift-Click
-     * 2: Move item to/from hotbar slot (Depends on current slot and hotbar slot being full or empty)
-     * 3: Duplicate item (only while in creative)
-     * 4: Drop item
-     * 5: Spread items (Drag behavior)
-     * 6: Merge all valid items with held item
+    /*
+     * Action values: 0: Standard Click 1: Shift-Click 2: Move item to/from hotbar slot (Depends on current slot and
+     * hotbar slot being full or empty) 3: Duplicate item (only while in creative) 4: Drop item 5: Spread items (Drag
+     * behavior) 6: Merge all valid items with held item
      */
     @SideOnly(Side.CLIENT)
     public void slotClick(PlayerControllerMP playerController, int windowId, int slot, int data, int action,
-                          EntityPlayer player) {
-    }
+            EntityPlayer player) {}
 
     public void sortComplete() {
 
@@ -81,12 +75,10 @@ public class CommonProxy implements InvTweaksAPI {
     }
 
     @Override
-    public void setSortKeyEnabled(boolean enabled) {
-    }
+    public void setSortKeyEnabled(boolean enabled) {}
 
     @Override
-    public void setTextboxMode(boolean enabled) {
-    }
+    public void setTextboxMode(boolean enabled) {}
 
     @Override
     public int compareItems(ItemStack i, ItemStack j) {
@@ -94,15 +86,13 @@ public class CommonProxy implements InvTweaksAPI {
     }
 
     @Override
-    public void sort(ContainerSection section, SortingMethod method) {
-    }
+    public void sort(ContainerSection section, SortingMethod method) {}
 
     @SubscribeEvent
     public void onPlayerLoggedIn(PlayerEvent.PlayerLoggedInEvent e) {
         FMLEmbeddedChannel channel = invtweaksChannel.get(Side.SERVER);
 
-        channel.attr(FMLOutboundHandler.FML_MESSAGETARGET).set(
-                FMLOutboundHandler.OutboundTarget.PLAYER);
+        channel.attr(FMLOutboundHandler.FML_MESSAGETARGET).set(FMLOutboundHandler.OutboundTarget.PLAYER);
         channel.attr(FMLOutboundHandler.FML_MESSAGETARGETARGS).set(e.player);
 
         channel.writeOutbound(new ITPacketLogin());

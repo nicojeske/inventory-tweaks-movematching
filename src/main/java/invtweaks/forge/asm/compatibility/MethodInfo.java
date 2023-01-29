@@ -3,6 +3,7 @@ package invtweaks.forge.asm.compatibility;
 import org.objectweb.asm.Type;
 
 public class MethodInfo {
+
     public Type methodType;
     public Type methodClass;
     public String methodName;

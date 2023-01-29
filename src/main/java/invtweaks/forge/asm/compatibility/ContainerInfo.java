@@ -4,6 +4,7 @@ import invtweaks.forge.asm.ContainerTransformer;
 
 @SuppressWarnings("UnusedDeclaration")
 public class ContainerInfo {
+
     public boolean showButtons = false;
     public boolean validInventory = false;
     public boolean validChest = false;
@@ -13,8 +14,7 @@ public class ContainerInfo {
     public MethodInfo rowSizeMethod = null;
     public MethodInfo largeChestMethod = null;
 
-    public ContainerInfo() {
-    }
+    public ContainerInfo() {}
 
     public ContainerInfo(boolean standard, boolean validInv, boolean validCh) {
         showButtons = standard;

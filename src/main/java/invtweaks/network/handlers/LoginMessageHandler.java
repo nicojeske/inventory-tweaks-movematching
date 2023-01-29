@@ -9,9 +9,10 @@ import io.netty.channel.SimpleChannelInboundHandler;
 
 @ChannelHandler.Sharable
 public class LoginMessageHandler extends SimpleChannelInboundHandler<ITPacketLogin> {
+
     @Override
     protected void channelRead0(ChannelHandlerContext ctx, ITPacketLogin msg) throws Exception {
-        if(msg.protocolVersion == InvTweaksConst.PROTOCOL_VERSION) {
+        if (msg.protocolVersion == InvTweaksConst.PROTOCOL_VERSION) {
             InvTweaksMod.proxy.setServerHasInvTweaks(true);
         }
     }

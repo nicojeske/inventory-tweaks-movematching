@@ -1,8 +1,10 @@
 package invtweaks;
 
-import cpw.mods.fml.client.FMLClientHandler;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
+import java.lang.reflect.Field;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.GuiButton;
@@ -27,12 +29,10 @@ import net.minecraft.util.ResourceLocation;
 import org.apache.logging.log4j.Logger;
 import org.lwjgl.input.Mouse;
 
+import cpw.mods.fml.client.FMLClientHandler;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import invtweaks.api.container.ContainerSection;
-
-import java.lang.reflect.Field;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 /**
  * Minecraft 1.3 Obfuscation layer
@@ -54,15 +54,15 @@ public class InvTweaksObfuscation {
     // Minecraft members
 
     public void addChatMessage(String message) {
-        if(mc.ingameGUI != null) {
+        if (mc.ingameGUI != null) {
             mc.ingameGUI.getChatGUI().printChatMessage(new ChatComponentText(message));
         }
     }
 
     public static String getNamespacedID(String id) {
-        if(id == null) {
+        if (id == null) {
             return null;
-        } else if(id.indexOf(':') == -1) {
+        } else if (id.indexOf(':') == -1) {
             return "minecraft:" + id;
         }
         return id;
@@ -163,15 +163,16 @@ public class InvTweaksObfuscation {
     }
 
     public boolean areSameItemType(ItemStack itemStack1, ItemStack itemStack2) {
-        return itemStack1.isItemEqual(itemStack2) || (itemStack1.isItemStackDamageable() && itemStack1
-                .getItem() == itemStack2.getItem());
+        return itemStack1.isItemEqual(itemStack2)
+                || (itemStack1.isItemStackDamageable() && itemStack1.getItem() == itemStack2.getItem());
     }
 
     public boolean areItemsStackable(ItemStack itemStack1, ItemStack itemStack2) {
-        return itemStack1 != null && itemStack2 != null && itemStack1.isItemEqual(itemStack2) &&
-                itemStack1.isStackable() &&
-                (!itemStack1.getHasSubtypes() || itemStack1.getItemDamage() == itemStack2.getItemDamage()) &&
-                ItemStack.areItemStackTagsEqual(itemStack1, itemStack2);
+        return itemStack1 != null && itemStack2 != null
+                && itemStack1.isItemEqual(itemStack2)
+                && itemStack1.isStackable()
+                && (!itemStack1.getHasSubtypes() || itemStack1.getItemDamage() == itemStack2.getItemDamage())
+                && ItemStack.areItemStackTagsEqual(itemStack1, itemStack2);
     }
 
     // Container members
@@ -186,35 +187,27 @@ public class InvTweaksObfuscation {
 
     @SuppressWarnings("unchecked")
     public static int getSlotNumber(Slot slot) {
-        /* FIXME: Cannot compile until SpecialSource update
-        try {
-            // Creative slots don't set the "slotNumber" property, serve as a proxy for true slots
-            if(slot instanceof GuiContainerCreative.CreativeSlot) {
-                Slot underlyingSlot = ((SlotCreativeInventory)slot).theSlot;
-                if(underlyingSlot != null) {
-                    return underlyingSlot.slotNumber;
-                } else {
-                    log.warn("Creative inventory: Failed to get real slot");
-                }
-            }
-        } catch(Exception e) {
-            log.warn("Failed to access creative slot number");
-        }
-        */
+        /*
+         * FIXME: Cannot compile until SpecialSource update try { // Creative slots don't set the "slotNumber" property,
+         * serve as a proxy for true slots if(slot instanceof GuiContainerCreative.CreativeSlot) { Slot underlyingSlot =
+         * ((SlotCreativeInventory)slot).theSlot; if(underlyingSlot != null) { return underlyingSlot.slotNumber; } else
+         * { log.warn("Creative inventory: Failed to get real slot"); } } } catch(Exception e) {
+         * log.warn("Failed to access creative slot number"); }
+         */
         return slot.slotNumber;
     }
 
     @SideOnly(Side.CLIENT)
     public static Slot getSlotAtMousePosition(GuiContainer guiContainer) {
         // Copied from GuiContainer
-        if(guiContainer != null) {
+        if (guiContainer != null) {
             Container container = guiContainer.inventorySlots;
 
             int x = getMouseX(guiContainer);
             int y = getMouseY(guiContainer);
-            for(int k = 0; k < container.inventorySlots.size(); k++) {
+            for (int k = 0; k < container.inventorySlots.size(); k++) {
                 Slot slot = (Slot) container.inventorySlots.get(k);
-                if(getIsMouseOverSlot(guiContainer, slot, x, y)) {
+                if (getIsMouseOverSlot(guiContainer, slot, x, y)) {
                     return slot;
                 }
             }
@@ -232,10 +225,12 @@ public class InvTweaksObfuscation {
     @SideOnly(Side.CLIENT)
     private static boolean getIsMouseOverSlot(GuiContainer guiContainer, Slot slot, int x, int y) {
         // Copied from GuiContainer
-        if(guiContainer != null) {
+        if (guiContainer != null) {
             x -= guiContainer.guiLeft;
             y -= guiContainer.guiTop;
-            return x >= slot.xDisplayPosition - 1 && x < slot.xDisplayPosition + 16 + 1 && y >= slot.yDisplayPosition - 1 && y < slot.yDisplayPosition + 16 + 1;
+            return x >= slot.xDisplayPosition - 1 && x < slot.xDisplayPosition + 16 + 1
+                    && y >= slot.yDisplayPosition - 1
+                    && y < slot.yDisplayPosition + 16 + 1;
         } else {
             return false;
         }
@@ -248,8 +243,7 @@ public class InvTweaksObfuscation {
 
     @SideOnly(Side.CLIENT)
     private static int getMouseY(GuiContainer guiContainer) {
-        return guiContainer.height -
-                (Mouse.getEventY() * guiContainer.height) / getDisplayHeight() - 1;
+        return guiContainer.height - (Mouse.getEventY() * guiContainer.height) / getDisplayHeight() - 1;
     }
 
     public static int getSpecialChestRowSize(Container container) {
@@ -260,7 +254,8 @@ public class InvTweaksObfuscation {
     public boolean hasTexture(ResourceLocation texture) {
         try {
             mc.getResourceManager().getResource(texture);
-        } catch(/*IOException*/Exception e) { //FIXME: Java is stupid, the exception annotations just aren't being generated correctly at the moment.
+        } catch (/* IOException */Exception e) { // FIXME: Java is stupid, the exception annotations just aren't being
+                                                 // generated correctly at the moment.
             return false;
         }
         return true;
@@ -329,7 +324,7 @@ public class InvTweaksObfuscation {
     public static boolean isBasicSlot(Object o) { // Slot
         // TODO: SpecialSource, class ATs, cannot compile
         return o != null && (o.getClass()
-                              .equals(Slot.class)/* || o.getClass().equals(GuiContainerCreative.CreativeSlot.class)*/);
+                .equals(Slot.class)/* || o.getClass().equals(GuiContainerCreative.CreativeSlot.class) */);
     }
 
 }

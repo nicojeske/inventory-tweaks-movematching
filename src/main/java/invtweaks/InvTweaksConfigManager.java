@@ -1,12 +1,13 @@
 package invtweaks;
 
+import java.io.*;
+import java.util.Vector;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.StatCollector;
-import org.apache.logging.log4j.Logger;
 
-import java.io.*;
-import java.util.Vector;
+import org.apache.logging.log4j.Logger;
 
 /**
  * Handles the (re)loading of the configuration, and all that is related to file extraction/moves.
@@ -37,19 +38,19 @@ public class InvTweaksConfigManager {
 
         // Load properties
         try {
-            if(config != null && config.refreshProperties()) {
+            if (config != null && config.refreshProperties()) {
                 shortcutsHandler = new InvTweaksHandlerShortcuts(mc, config);
                 InvTweaks.logInGameStatic("invtweaks.propsfile.loaded");
             }
-        } catch(IOException e) {
+        } catch (IOException e) {
             InvTweaks.logInGameErrorStatic("invtweaks.loadconfig.refresh.error", e);
         }
 
         // Load rules + tree files
         long configLastModified = computeConfigLastModified();
-        if(config != null) {
+        if (config != null) {
             // Check time of last edit for both configuration files.
-            if(storedConfigLastModified != configLastModified) {
+            if (storedConfigLastModified != configLastModified) {
                 return loadConfig(); // Reload
             } else {
                 return true;
@@ -84,27 +85,27 @@ public class InvTweaksConfigManager {
 
         // Ensure the config folder exists
         File configDir = InvTweaksConst.MINECRAFT_CONFIG_DIR;
-        if(!configDir.exists()) {
+        if (!configDir.exists()) {
             configDir.mkdir();
         }
 
         // Compatibility: Tree version check
         try {
-            if(!(InvTweaksItemTreeLoader.isValidVersion(InvTweaksConst.CONFIG_TREE_FILE))) {
+            if (!(InvTweaksItemTreeLoader.isValidVersion(InvTweaksConst.CONFIG_TREE_FILE))) {
                 backupFile(InvTweaksConst.CONFIG_TREE_FILE);
             }
-        } catch(Exception e) {
+        } catch (Exception e) {
             log.warn("Failed to check item tree version: " + e.getMessage());
         }
 
         // Compatibility: File names check
-        if(InvTweaksConst.OLD_CONFIG_TREE_FILE.exists()) {
-            if(InvTweaksConst.CONFIG_RULES_FILE.exists()) {
+        if (InvTweaksConst.OLD_CONFIG_TREE_FILE.exists()) {
+            if (InvTweaksConst.CONFIG_RULES_FILE.exists()) {
                 backupFile(InvTweaksConst.CONFIG_TREE_FILE);
             }
             InvTweaksConst.OLD_CONFIG_TREE_FILE.renameTo(InvTweaksConst.CONFIG_TREE_FILE);
-        } else if(InvTweaksConst.OLDER_CONFIG_RULES_FILE.exists()) {
-            if(InvTweaksConst.CONFIG_RULES_FILE.exists()) {
+        } else if (InvTweaksConst.OLDER_CONFIG_RULES_FILE.exists()) {
+            if (InvTweaksConst.CONFIG_RULES_FILE.exists()) {
                 backupFile(InvTweaksConst.CONFIG_RULES_FILE);
             }
             InvTweaksConst.OLDER_CONFIG_RULES_FILE.renameTo(InvTweaksConst.CONFIG_RULES_FILE);
@@ -112,15 +113,17 @@ public class InvTweaksConfigManager {
 
         // Create missing files
 
-        if(!InvTweaksConst.CONFIG_RULES_FILE.exists() && extractFile(InvTweaksConst.DEFAULT_CONFIG_FILE,
-                                                                     InvTweaksConst.CONFIG_RULES_FILE)) {
-            InvTweaks.logInGameStatic(InvTweaksConst.CONFIG_RULES_FILE + " " +
-                                              StatCollector.translateToLocal("invtweaks.loadconfig.filemissing"));
+        if (!InvTweaksConst.CONFIG_RULES_FILE.exists()
+                && extractFile(InvTweaksConst.DEFAULT_CONFIG_FILE, InvTweaksConst.CONFIG_RULES_FILE)) {
+            InvTweaks.logInGameStatic(
+                    InvTweaksConst.CONFIG_RULES_FILE + " "
+                            + StatCollector.translateToLocal("invtweaks.loadconfig.filemissing"));
         }
-        if(!InvTweaksConst.CONFIG_TREE_FILE.exists() && extractFile(InvTweaksConst.DEFAULT_CONFIG_TREE_FILE,
-                                                                    InvTweaksConst.CONFIG_TREE_FILE)) {
-            InvTweaks.logInGameStatic(InvTweaksConst.CONFIG_TREE_FILE + " " +
-                                              StatCollector.translateToLocal("invtweaks.loadconfig.filemissing"));
+        if (!InvTweaksConst.CONFIG_TREE_FILE.exists()
+                && extractFile(InvTweaksConst.DEFAULT_CONFIG_TREE_FILE, InvTweaksConst.CONFIG_TREE_FILE)) {
+            InvTweaks.logInGameStatic(
+                    InvTweaksConst.CONFIG_TREE_FILE + " "
+                            + StatCollector.translateToLocal("invtweaks.loadconfig.filemissing"));
         }
 
         storedConfigLastModified = computeConfigLastModified();
@@ -133,7 +136,7 @@ public class InvTweaksConfigManager {
         try {
 
             // Configuration creation
-            if(config == null) {
+            if (config == null) {
                 config = new InvTweaksConfig(InvTweaksConst.CONFIG_RULES_FILE, InvTweaksConst.CONFIG_TREE_FILE);
                 autoRefillHandler = new InvTweaksHandlerAutoRefill(mc, config);
                 shortcutsHandler = new InvTweaksHandlerShortcuts(mc, config);
@@ -143,19 +146,20 @@ public class InvTweaksConfigManager {
             config.load();
             shortcutsHandler.loadShortcuts();
 
-            if(config.getProperty(InvTweaksConfig.PROP_ENABLE_CONFIG_LOADED_MESSAGE).equals(InvTweaksConfig.VALUE_TRUE)) {
+            if (config.getProperty(InvTweaksConfig.PROP_ENABLE_CONFIG_LOADED_MESSAGE)
+                    .equals(InvTweaksConfig.VALUE_TRUE)) {
                 InvTweaks.logInGameStatic("invtweaks.loadconfig.done");
             }
             showConfigErrors(config);
-        } catch(FileNotFoundException e) {
+        } catch (FileNotFoundException e) {
             error = "Config file not found";
             errorException = e;
-        } catch(Exception e) {
+        } catch (Exception e) {
             error = "Error while loading config";
             errorException = e;
         }
 
-        if(error != null) {
+        if (error != null) {
             log.error(error);
             InvTweaks.logInGameErrorStatic(error, errorException);
 
@@ -176,13 +180,13 @@ public class InvTweaksConfigManager {
 
                 config.load();
                 shortcutsHandler.loadShortcuts();
-            } catch(Exception e) {
+            } catch (Exception e) {
                 // But if this fails too there's not much point in trying again
                 config = null;
                 autoRefillHandler = null;
                 shortcutsHandler = null;
 
-                if(e.getCause() == null) {
+                if (e.getCause() == null) {
                     e.initCause(errorException);
                 }
 
@@ -197,7 +201,7 @@ public class InvTweaksConfigManager {
 
     private void backupFile(File file) {
         File newFile = new File(file.getName() + ".bak");
-        if(newFile.exists()) {
+        if (newFile.exists()) {
             newFile.delete();
         }
         file.renameTo(newFile);
@@ -205,7 +209,7 @@ public class InvTweaksConfigManager {
 
     private void backupFile(File file, String name) {
         File newFile = new File(name + ".bak");
-        if(newFile.exists()) {
+        if (newFile.exists()) {
             newFile.delete();
         }
         file.renameTo(newFile);
@@ -226,12 +230,12 @@ public class InvTweaksConfigManager {
                 f.close();
 
                 return true;
-            } catch(IOException e) {
+            } catch (IOException e) {
                 InvTweaks.logInGameStatic("[16] The mod won't work, because " + destination + " creation failed!");
                 log.error("Cannot create " + destination + " file: " + e.getMessage());
                 return false;
             }
-        } catch(IOException e) {
+        } catch (IOException e) {
             InvTweaks.logInGameStatic("[15] The mod won't work, because " + resource + " extraction failed!");
 
             log.error("Cannot extract " + resource + " file: " + e.getMessage());
@@ -241,9 +245,9 @@ public class InvTweaksConfigManager {
 
     private void showConfigErrors(InvTweaksConfig config) {
         Vector<String> invalid = config.getInvalidKeywords();
-        if(invalid.size() > 0) {
+        if (invalid.size() > 0) {
             String error = StatCollector.translateToLocal("invtweaks.loadconfig.invalidkeywords") + ": ";
-            for(String keyword : config.getInvalidKeywords()) {
+            for (String keyword : config.getInvalidKeywords()) {
                 error += keyword + " ";
             }
             InvTweaks.logInGameStatic(error);

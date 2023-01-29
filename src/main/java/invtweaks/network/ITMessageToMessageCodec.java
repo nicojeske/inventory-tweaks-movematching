@@ -10,6 +10,7 @@ import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 
 public class ITMessageToMessageCodec extends FMLIndexedMessageToMessageCodec<ITPacket> {
+
     public ITMessageToMessageCodec() {
         addDiscriminator(InvTweaksConst.PACKET_LOGIN, ITPacketLogin.class);
         addDiscriminator(InvTweaksConst.PACKET_CLICK, ITPacketClick.class);

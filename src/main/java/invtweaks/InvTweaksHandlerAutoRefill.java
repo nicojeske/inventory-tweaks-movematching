@@ -1,5 +1,8 @@
 package invtweaks;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.PositionedSoundRecord;
 import net.minecraft.item.Item;
@@ -13,9 +16,6 @@ import org.apache.logging.log4j.Logger;
 import invtweaks.api.IItemTreeItem;
 import invtweaks.api.container.ContainerSection;
 import invtweaks.forge.InvTweaksMod;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Handles the auto-refilling of the hotbar.
@@ -44,16 +44,17 @@ public class InvTweaksHandlerAutoRefill extends InvTweaksObfuscation {
      */
     public void autoRefillSlot(int slot, String wantedId, int wantedDamage) throws Exception {
 
-        InvTweaksContainerSectionManager container = new InvTweaksContainerSectionManager(mc,
-                                                                                          ContainerSection.INVENTORY);
+        InvTweaksContainerSectionManager container = new InvTweaksContainerSectionManager(
+                mc,
+                ContainerSection.INVENTORY);
         ItemStack candidateStack, replacementStack = null;
         int replacementStackSlot = -1;
         boolean refillBeforeBreak = config.getProperty(InvTweaksConfig.PROP_AUTO_REFILL_BEFORE_BREAK)
-                                          .equals(InvTweaksConfig.VALUE_TRUE);
+                .equals(InvTweaksConfig.VALUE_TRUE);
         boolean hasSubtypes = false;
 
-        Item original = (Item)Item.itemRegistry.getObject(wantedId);
-        if(original != null) {
+        Item original = (Item) Item.itemRegistry.getObject(wantedId);
+        if (original != null) {
             hasSubtypes = original.getHasSubtypes();
         }
 
@@ -62,27 +63,32 @@ public class InvTweaksHandlerAutoRefill extends InvTweaksObfuscation {
         InvTweaksItemTree tree = config.getTree();
 
         // Check that the item is in the tree
-        if(!tree.isItemUnknown(wantedId, wantedDamage)) {
+        if (!tree.isItemUnknown(wantedId, wantedDamage)) {
 
             //// Search replacement
 
             List<IItemTreeItem> items = tree.getItems(wantedId, wantedDamage);
 
             // Find rules that match the slot
-            for(IItemTreeItem item : items) {
-                if(!hasSubtypes || ((item.getDamage() == wantedDamage) || (item.getDamage() == InvTweaksConst.DAMAGE_WILDCARD))) {
+            for (IItemTreeItem item : items) {
+                if (!hasSubtypes || ((item.getDamage() == wantedDamage)
+                        || (item.getDamage() == InvTweaksConst.DAMAGE_WILDCARD))) {
                     // Since we search a matching item using rules,
                     // create a fake one that matches the exact item first
-                    matchingRules.add(new InvTweaksConfigSortingRule(tree, "D" + (slot - 26), item.getName(),
-                                                                     InvTweaksConst.INVENTORY_SIZE,
-                                                                     InvTweaksConst.INVENTORY_ROW_SIZE));
+                    matchingRules.add(
+                            new InvTweaksConfigSortingRule(
+                                    tree,
+                                    "D" + (slot - 26),
+                                    item.getName(),
+                                    InvTweaksConst.INVENTORY_SIZE,
+                                    InvTweaksConst.INVENTORY_ROW_SIZE));
                 }
             }
-            for(InvTweaksConfigSortingRule rule : rules) {
-                if(rule.getType() == InvTweaksConfigSortingRuleType.SLOT || rule
-                        .getType() == InvTweaksConfigSortingRuleType.COLUMN) {
-                    for(int preferredSlot : rule.getPreferredSlots()) {
-                        if(slot == preferredSlot) {
+            for (InvTweaksConfigSortingRule rule : rules) {
+                if (rule.getType() == InvTweaksConfigSortingRuleType.SLOT
+                        || rule.getType() == InvTweaksConfigSortingRuleType.COLUMN) {
+                    for (int preferredSlot : rule.getPreferredSlots()) {
+                        if (slot == preferredSlot) {
                             matchingRules.add(rule);
                             break;
                         }
@@ -93,29 +99,33 @@ public class InvTweaksHandlerAutoRefill extends InvTweaksObfuscation {
             // Look only for a matching stack
             // First, look for the same item,
             // else one that matches the slot's rules
-            for(InvTweaksConfigSortingRule rule : matchingRules) {
-                for(int i = 0; i < InvTweaksConst.INVENTORY_SIZE; i++) {
+            for (InvTweaksConfigSortingRule rule : matchingRules) {
+                for (int i = 0; i < InvTweaksConst.INVENTORY_SIZE; i++) {
                     candidateStack = container.getItemStack(i);
-                    if(candidateStack != null) {
-                        List<IItemTreeItem> candidateItems = tree
-                                .getItems(Item.itemRegistry.getNameForObject(candidateStack.getItem()), candidateStack.getItemDamage());
-                        if(tree.matches(candidateItems, rule.getKeyword())) {
+                    if (candidateStack != null) {
+                        List<IItemTreeItem> candidateItems = tree.getItems(
+                                Item.itemRegistry.getNameForObject(candidateStack.getItem()),
+                                candidateStack.getItemDamage());
+                        if (tree.matches(candidateItems, rule.getKeyword())) {
                             // Choose tool of highest damage value
-                            if(candidateStack.getMaxStackSize() == 1) {
+                            if (candidateStack.getMaxStackSize() == 1) {
                                 // Item
-                                if((replacementStack == null || candidateStack.getItemDamage() > replacementStack
-                                        .getItemDamage()) && (!refillBeforeBreak || candidateStack.getMaxDamage() - candidateStack
-                                        .getItemDamage() > config
-                                        .getIntProperty(InvTweaksConfig.PROP_AUTO_REFILL_DAMAGE_THRESHHOLD))) {
+                                if ((replacementStack == null
+                                        || candidateStack.getItemDamage() > replacementStack.getItemDamage())
+                                        && (!refillBeforeBreak
+                                                || candidateStack.getMaxDamage() - candidateStack.getItemDamage()
+                                                        > config.getIntProperty(
+                                                                InvTweaksConfig.PROP_AUTO_REFILL_DAMAGE_THRESHHOLD))) {
                                     replacementStack = candidateStack;
                                     replacementStackSlot = i;
                                 }
                             }
                             // Choose stack of lowest size
-                            else if(replacementStack == null || candidateStack.stackSize < replacementStack.stackSize) {
-                                replacementStack = candidateStack;
-                                replacementStackSlot = i;
-                            }
+                            else if (replacementStack == null
+                                    || candidateStack.stackSize < replacementStack.stackSize) {
+                                        replacementStack = candidateStack;
+                                        replacementStackSlot = i;
+                                    }
                         }
                     }
                 }
@@ -124,11 +134,11 @@ public class InvTweaksHandlerAutoRefill extends InvTweaksObfuscation {
 
         // If item is unknown, look for exact same item
         else {
-            for(int i = 0; i < InvTweaksConst.INVENTORY_SIZE; i++) {
+            for (int i = 0; i < InvTweaksConst.INVENTORY_SIZE; i++) {
                 candidateStack = container.getItemStack(i);
-                if(candidateStack != null &&
-                        ObjectUtils.equals(Item.itemRegistry.getNameForObject(candidateStack.getItem()), wantedId) &&
-                        candidateStack.getItemDamage() == wantedDamage) {
+                if (candidateStack != null
+                        && ObjectUtils.equals(Item.itemRegistry.getNameForObject(candidateStack.getItem()), wantedId)
+                        && candidateStack.getItemDamage() == wantedDamage) {
                     replacementStack = candidateStack;
                     replacementStackSlot = i;
                     break;
@@ -138,15 +148,14 @@ public class InvTweaksHandlerAutoRefill extends InvTweaksObfuscation {
 
         //// Proceed to replacement
 
-        if(replacementStack != null || (refillBeforeBreak && container.getSlot(slot).getStack() != null)) {
+        if (replacementStack != null || (refillBeforeBreak && container.getSlot(slot).getStack() != null)) {
 
             log.info("Automatic stack replacement.");
 
-		    /*
-             * This allows to have a short feedback
-		     * that the stack/tool is empty/broken.
-		     */
-            InvTweaks.getInstance().addScheduledTask(mc.theWorld.getTotalWorldTime()+1L, new Runnable() {
+            /*
+             * This allows to have a short feedback that the stack/tool is empty/broken.
+             */
+            InvTweaks.getInstance().addScheduledTask(mc.theWorld.getTotalWorldTime() + 1L, new Runnable() {
 
                 private InvTweaksContainerSectionManager containerMgr;
                 private int targetedSlot;
@@ -157,9 +166,10 @@ public class InvTweaksHandlerAutoRefill extends InvTweaksObfuscation {
                 public Runnable init(Minecraft mc, int i, int currentItem, boolean refillBeforeBreak) throws Exception {
                     this.containerMgr = new InvTweaksContainerSectionManager(mc, ContainerSection.INVENTORY);
                     this.targetedSlot = currentItem;
-                    if(i != -1) {
+                    if (i != -1) {
                         this.i = i;
-                        this.expectedItemId = Item.itemRegistry.getNameForObject(containerMgr.getItemStack(i).getItem());
+                        this.expectedItemId = Item.itemRegistry
+                                .getNameForObject(containerMgr.getItemStack(i).getItem());
                     } else {
                         this.i = containerMgr.getFirstEmptyIndex();
                         this.expectedItemId = null;
@@ -170,45 +180,39 @@ public class InvTweaksHandlerAutoRefill extends InvTweaksObfuscation {
 
                 public void run() {
                     // Disabled because this is running next tick, not on a thread
-/*
-                    // Wait for the server to confirm that the
-                    // slot is now empty
-                    int pollingTime = 0;
-                    setHasInventoryChanged(false);
-                    while(getThePlayer() != null && !hasInventoryChanged() && pollingTime < InvTweaksConst.POLLING_TIMEOUT) {
-                        trySleep(InvTweaksConst.POLLING_DELAY);
-                    }
-                    if(getThePlayer() == null) {
-                        return; // Game closed
-                    }
-                    if(pollingTime < InvTweaksConst.AUTO_REFILL_DELAY) {
-                        trySleep(InvTweaksConst.AUTO_REFILL_DELAY - pollingTime);
-                    }
-                    if(pollingTime >= InvTweaksConst.POLLING_TIMEOUT) {
-                        log.warn("Autoreplace timout");
-                    }*/
+                    /*
+                     * // Wait for the server to confirm that the // slot is now empty int pollingTime = 0;
+                     * setHasInventoryChanged(false); while(getThePlayer() != null && !hasInventoryChanged() &&
+                     * pollingTime < InvTweaksConst.POLLING_TIMEOUT) { trySleep(InvTweaksConst.POLLING_DELAY); }
+                     * if(getThePlayer() == null) { return; // Game closed } if(pollingTime <
+                     * InvTweaksConst.AUTO_REFILL_DELAY) { trySleep(InvTweaksConst.AUTO_REFILL_DELAY - pollingTime); }
+                     * if(pollingTime >= InvTweaksConst.POLLING_TIMEOUT) { log.warn("Autoreplace timout"); }
+                     */
 
-                    if(i < 0 || targetedSlot < 0) {
+                    if (i < 0 || targetedSlot < 0) {
                         return;
                     }
 
-                    // TODO: Look for better update detection now that this runs tick-based. It'll probably fail a bit if latency is > 50ms (1 tick)
+                    // TODO: Look for better update detection now that this runs tick-based. It'll probably fail a bit
+                    // if latency is > 50ms (1 tick)
                     // Since last tick, things might have changed
                     ItemStack stack = containerMgr.getItemStack(i);
 
-                    if(stack != null && StringUtils.equals(Item.itemRegistry.getNameForObject(stack.getItem()),
-                                                    expectedItemId) || this.refillBeforeBreak) {
-                        if(containerMgr.move(targetedSlot, i) || containerMgr.move(i, targetedSlot)) {
-                            if(!config.getProperty(InvTweaksConfig.PROP_ENABLE_SOUNDS)
-                                      .equals(InvTweaksConfig.VALUE_FALSE)) {
-                                mc.getSoundHandler().playSound(PositionedSoundRecord.func_147674_a(
-                                        new ResourceLocation("mob.chicken.plop"), 1.0F));
+                    if (stack != null
+                            && StringUtils.equals(Item.itemRegistry.getNameForObject(stack.getItem()), expectedItemId)
+                            || this.refillBeforeBreak) {
+                        if (containerMgr.move(targetedSlot, i) || containerMgr.move(i, targetedSlot)) {
+                            if (!config.getProperty(InvTweaksConfig.PROP_ENABLE_SOUNDS)
+                                    .equals(InvTweaksConfig.VALUE_FALSE)) {
+                                mc.getSoundHandler().playSound(
+                                        PositionedSoundRecord
+                                                .func_147674_a(new ResourceLocation("mob.chicken.plop"), 1.0F));
                             }
                             // If item are swapped (like for mushroom soups),
                             // put the item back in the inventory if it is in the hotbar
-                            if(containerMgr.getItemStack(i) != null && i >= 27) {
-                                for(int j = 0; j < InvTweaksConst.INVENTORY_SIZE; j++) {
-                                    if(containerMgr.getItemStack(j) == null) {
+                            if (containerMgr.getItemStack(i) != null && i >= 27) {
+                                for (int j = 0; j < InvTweaksConst.INVENTORY_SIZE; j++) {
+                                    if (containerMgr.getItemStack(j) == null) {
                                         containerMgr.move(i, j);
                                         break;
                                     }
@@ -231,7 +235,7 @@ public class InvTweaksHandlerAutoRefill extends InvTweaksObfuscation {
     private static void trySleep(int delay) {
         try {
             Thread.sleep(delay);
-        } catch(InterruptedException e) {
+        } catch (InterruptedException e) {
             // Do nothing
         }
     }

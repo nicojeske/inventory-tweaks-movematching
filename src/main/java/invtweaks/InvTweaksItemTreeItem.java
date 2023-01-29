@@ -1,8 +1,8 @@
 package invtweaks;
 
-import invtweaks.api.IItemTreeItem;
-
 import org.apache.commons.lang3.ObjectUtils;
+
+import invtweaks.api.IItemTreeItem;
 
 /**
  * Representation of an item in the item tree.
@@ -54,11 +54,12 @@ public class InvTweaksItemTreeItem implements IItemTreeItem {
      * can be false).
      */
     public boolean equals(Object o) {
-        if(o == null || !(o instanceof IItemTreeItem)) {
+        if (o == null || !(o instanceof IItemTreeItem)) {
             return false;
         }
         IItemTreeItem item = (IItemTreeItem) o;
-        return ObjectUtils.equals(id, item.getId()) && (damage == InvTweaksConst.DAMAGE_WILDCARD || damage == item.getDamage());
+        return ObjectUtils.equals(id, item.getId())
+                && (damage == InvTweaksConst.DAMAGE_WILDCARD || damage == item.getDamage());
     }
 
     public String toString() {

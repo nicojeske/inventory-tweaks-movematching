@@ -1,12 +1,14 @@
 package invtweaks.forge;
 
-import invtweaks.InvTweaks;
+import net.minecraft.client.Minecraft;
+
 import cpw.mods.fml.client.FMLClientHandler;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.TickEvent;
-import net.minecraft.client.Minecraft;
+import invtweaks.InvTweaks;
 
 public class ForgeClientTick {
+
     private InvTweaks instance;
 
     public ForgeClientTick(InvTweaks inst) {
@@ -15,10 +17,10 @@ public class ForgeClientTick {
 
     @SubscribeEvent
     public void onTick(TickEvent.ClientTickEvent tick) {
-        if(tick.phase == TickEvent.Phase.START) {
+        if (tick.phase == TickEvent.Phase.START) {
             Minecraft mc = FMLClientHandler.instance().getClient();
-            if(mc.theWorld != null) {
-                if(mc.currentScreen != null) {
+            if (mc.theWorld != null) {
+                if (mc.currentScreen != null) {
                     instance.onTickInGUI(mc.currentScreen);
                 } else {
                     instance.onTickInGame();

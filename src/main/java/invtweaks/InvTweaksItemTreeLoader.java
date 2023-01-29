@@ -1,5 +1,13 @@
 package invtweaks;
 
+import java.io.File;
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
+
+import javax.xml.parsers.SAXParser;
+import javax.xml.parsers.SAXParserFactory;
+
 import net.minecraftforge.common.MinecraftForge;
 
 import org.xml.sax.Attributes;
@@ -7,14 +15,6 @@ import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 
 import invtweaks.api.IItemTreeListener;
-
-import javax.xml.parsers.SAXParser;
-import javax.xml.parsers.SAXParserFactory;
-
-import java.io.File;
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
 
 /**
  * Loads the item tree by parsing the XML file.
@@ -54,9 +54,9 @@ public class InvTweaksItemTreeLoader extends DefaultHandler {
         parser.parse(file, new InvTweaksItemTreeLoader());
 
         // Tree loaded event
-        synchronized(onLoadListeners) {
+        synchronized (onLoadListeners) {
             treeLoaded = true;
-            for(IItemTreeListener onLoadListener : onLoadListeners) {
+            for (IItemTreeListener onLoadListener : onLoadListeners) {
                 onLoadListener.onTreeLoaded(tree);
             }
         }
@@ -69,7 +69,7 @@ public class InvTweaksItemTreeLoader extends DefaultHandler {
     public synchronized static boolean isValidVersion(File file) throws Exception {
         init();
 
-        if(file.exists()) {
+        if (file.exists()) {
             treeVersion = null;
             SAXParserFactory parserFactory = SAXParserFactory.newInstance();
             SAXParser parser = parserFactory.newSAXParser();
@@ -82,7 +82,7 @@ public class InvTweaksItemTreeLoader extends DefaultHandler {
 
     public synchronized static void addOnLoadListener(IItemTreeListener listener) {
         onLoadListeners.add(listener);
-        if(treeLoaded) {
+        if (treeLoaded) {
             // Late event triggering
             listener.onTreeLoaded(tree);
         }
@@ -91,7 +91,6 @@ public class InvTweaksItemTreeLoader extends DefaultHandler {
     public synchronized static boolean removeOnLoadListener(IItemTreeListener listener) {
         return onLoadListeners.remove(listener);
     }
-
 
     @Override
     public synchronized void startElement(String uri, String localName, String name, Attributes attributes)
@@ -102,14 +101,14 @@ public class InvTweaksItemTreeLoader extends DefaultHandler {
         String oreDictNameAttr = attributes.getValue(ATTR_OREDICT_NAME);
 
         // Category
-        if(attributes.getLength() == 0 || treeVersion == null || rangeDMinAttr != null) {
+        if (attributes.getLength() == 0 || treeVersion == null || rangeDMinAttr != null) {
 
             // Tree version
-            if(treeVersion == null) {
+            if (treeVersion == null) {
                 treeVersion = newTreeVersion;
             }
 
-            if(categoryStack.isEmpty()) {
+            if (categoryStack.isEmpty()) {
                 // Root category
                 tree.setRootCategory(new InvTweaksItemTreeCategory(name));
             } else {
@@ -118,13 +117,18 @@ public class InvTweaksItemTreeLoader extends DefaultHandler {
             }
 
             // Handle damage ranges
-            if(rangeDMinAttr != null) {
+            if (rangeDMinAttr != null) {
                 String id = attributes.getValue(ATTR_ID);
                 int rangeDMin = Integer.parseInt(rangeDMinAttr);
                 int rangeDMax = Integer.parseInt(attributes.getValue(ATTR_RANGE_DMAX));
-                for(int damage = rangeDMin; damage <= rangeDMax; damage++) {
-                    tree.addItem(name, new InvTweaksItemTreeItem((name + id + "-" + damage).toLowerCase(), id, damage,
-                                                                 itemOrder++));
+                for (int damage = rangeDMin; damage <= rangeDMax; damage++) {
+                    tree.addItem(
+                            name,
+                            new InvTweaksItemTreeItem(
+                                    (name + id + "-" + damage).toLowerCase(),
+                                    id,
+                                    damage,
+                                    itemOrder++));
                 }
             }
 
@@ -132,22 +136,23 @@ public class InvTweaksItemTreeLoader extends DefaultHandler {
         }
 
         // Item
-        else if(attributes.getValue(ATTR_ID) != null) {
+        else if (attributes.getValue(ATTR_ID) != null) {
             String id = attributes.getValue(ATTR_ID);
             int damage = InvTweaksConst.DAMAGE_WILDCARD;
-            if(attributes.getValue(ATTR_DAMAGE) != null) {
+            if (attributes.getValue(ATTR_DAMAGE) != null) {
                 damage = Integer.parseInt(attributes.getValue(ATTR_DAMAGE));
             }
-            tree.addItem(categoryStack.getLast(),
-                         new InvTweaksItemTreeItem(name.toLowerCase(), id, damage, itemOrder++));
-        } else if(oreDictNameAttr != null) {
+            tree.addItem(
+                    categoryStack.getLast(),
+                    new InvTweaksItemTreeItem(name.toLowerCase(), id, damage, itemOrder++));
+        } else if (oreDictNameAttr != null) {
             tree.registerOre(categoryStack.getLast(), name.toLowerCase(), oreDictNameAttr, itemOrder++);
         }
     }
 
     @Override
     public synchronized void endElement(String uri, String localName, String name) throws SAXException {
-        if(!categoryStack.isEmpty() && name.equals(categoryStack.getLast())) {
+        if (!categoryStack.isEmpty() && name.equals(categoryStack.getLast())) {
             categoryStack.removeLast();
         }
     }

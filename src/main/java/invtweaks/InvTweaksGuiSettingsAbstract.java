@@ -1,14 +1,15 @@
 package invtweaks;
 
+import java.util.List;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.util.StatCollector;
+
 import org.apache.logging.log4j.Logger;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.util.Point;
-
-import java.util.List;
 
 /**
  * The inventory and chest settings menu.
@@ -60,22 +61,26 @@ public abstract class InvTweaksGuiSettingsAbstract extends GuiScreen {
     @Override
     public void drawScreen(int i, int j, float f) {
         drawDefaultBackground();
-        drawCenteredString(obf.getFontRenderer(), StatCollector.translateToLocal("invtweaks.settings.title"),
-                           width / 2, 20, 0xffffff);
+        drawCenteredString(
+                obf.getFontRenderer(),
+                StatCollector.translateToLocal("invtweaks.settings.title"),
+                width / 2,
+                20,
+                0xffffff);
         super.drawScreen(i, j, f);
     }
 
     @Override
     protected void actionPerformed(GuiButton guibutton) {
         // GuiButton
-        if(guibutton.id == ID_DONE) {
+        if (guibutton.id == ID_DONE) {
             obf.displayGuiScreen(parentScreen);
         }
     }
 
     @Override
     protected void keyTyped(char c, int keyCode) {
-        if(keyCode == Keyboard.KEY_ESCAPE) {
+        if (keyCode == Keyboard.KEY_ESCAPE) {
             obf.displayGuiScreen(parentScreen);
         }
     }
@@ -93,7 +98,7 @@ public abstract class InvTweaksGuiSettingsAbstract extends GuiScreen {
 
     protected String computeBooleanButtonLabel(String property, String label) {
         String propertyValue = config.getProperty(property);
-        if(propertyValue.equals(InvTweaksConfig.VALUE_CI_COMPATIBILITY)) {
+        if (propertyValue.equals(InvTweaksConfig.VALUE_CI_COMPATIBILITY)) {
             return label + DISABLE_CI;
         } else {
             Boolean enabled = Boolean.valueOf(propertyValue);

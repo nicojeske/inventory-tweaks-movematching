@@ -3,6 +3,7 @@ package invtweaks;
 import java.util.Comparator;
 
 public abstract class TickScheduledTask {
+
     private final long scheduledTickTime;
 
     public TickScheduledTask(long time) {
@@ -16,6 +17,7 @@ public abstract class TickScheduledTask {
     abstract void run();
 
     public static final class TaskComparator implements Comparator<TickScheduledTask> {
+
         @Override
         public int compare(TickScheduledTask o1, TickScheduledTask o2) {
             // TODO: Kinda inefficient, but the better version is J1.7+

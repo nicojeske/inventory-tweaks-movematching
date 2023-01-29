@@ -1,11 +1,11 @@
 package invtweaks;
 
-import org.apache.logging.log4j.Logger;
-import org.lwjgl.input.Keyboard;
-
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+
+import org.apache.logging.log4j.Logger;
+import org.lwjgl.input.Keyboard;
 
 /**
  * @author Jimeo Wan
@@ -21,19 +21,19 @@ public class InvTweaksShortcutMapping {
     }
 
     public InvTweaksShortcutMapping(int... keyCodes) {
-        for(int keyCode : keyCodes) {
+        for (int keyCode : keyCodes) {
             keysToHold.add(keyCode);
         }
     }
 
     public InvTweaksShortcutMapping(String keyName) {
-        this(new String[] {keyName});
+        this(new String[] { keyName });
     }
 
     public InvTweaksShortcutMapping(String... keyNames) {
-        for(String keyName : keyNames) {
+        for (String keyName : keyNames) {
             // - Accept both KEY_### and ###, in case someone
-            //   takes the LWJGL Javadoc at face value
+            // takes the LWJGL Javadoc at face value
             // - Accept LALT & RALT instead of LMENU & RMENU
             keyName = keyName.trim().replace("KEY_", "").replace("ALT", "MENU");
             keysToHold.add(Keyboard.getKeyIndex(keyName));
@@ -41,14 +41,14 @@ public class InvTweaksShortcutMapping {
     }
 
     public boolean isTriggered(Map<Integer, Boolean> pressedKeys) {
-        for(Integer keyToHold : keysToHold) {
-            if(keyToHold != Keyboard.KEY_LCONTROL) {
-                if(!pressedKeys.get(keyToHold)) {
+        for (Integer keyToHold : keysToHold) {
+            if (keyToHold != Keyboard.KEY_LCONTROL) {
+                if (!pressedKeys.get(keyToHold)) {
                     return false;
                 }
             }
             // AltGr also activates LCtrl, make sure the real LCtrl has been pressed
-            else if(!pressedKeys.get(keyToHold) || Keyboard.isKeyDown(Keyboard.KEY_RMENU)) {
+            else if (!pressedKeys.get(keyToHold) || Keyboard.isKeyDown(Keyboard.KEY_RMENU)) {
                 return false;
             }
         }

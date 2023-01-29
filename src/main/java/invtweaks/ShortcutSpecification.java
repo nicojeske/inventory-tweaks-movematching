@@ -1,6 +1,7 @@
 package invtweaks;
 
 public class ShortcutSpecification {
+
     public enum Action {
         MOVE,
         DROP

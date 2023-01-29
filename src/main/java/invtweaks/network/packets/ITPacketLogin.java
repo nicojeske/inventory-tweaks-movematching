@@ -4,6 +4,7 @@ import invtweaks.InvTweaksConst;
 import io.netty.buffer.ByteBuf;
 
 public class ITPacketLogin implements ITPacket {
+
     public byte protocolVersion = InvTweaksConst.PROTOCOL_VERSION;
 
     @Override

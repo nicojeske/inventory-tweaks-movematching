@@ -1,12 +1,5 @@
 package invtweaks;
 
-import net.minecraftforge.common.MinecraftForge;
-
-import org.apache.logging.log4j.Logger;
-
-import invtweaks.api.IItemTreeItem;
-import invtweaks.forge.ClientProxy;
-
 import java.io.*;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
@@ -17,6 +10,12 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Vector;
 
+import net.minecraftforge.common.MinecraftForge;
+
+import org.apache.logging.log4j.Logger;
+
+import invtweaks.api.IItemTreeItem;
+import invtweaks.forge.ClientProxy;
 
 /**
  * The global mod's configuration.
@@ -24,6 +23,7 @@ import java.util.Vector;
  * @author Jimeo Wan
  */
 public class InvTweaksConfig {
+
     private static final Logger log = InvTweaks.log;
 
     public static final String PROP_VERSION = "version";
@@ -68,7 +68,6 @@ public class InvTweaksConfig {
     public static final String DEBUG = "debug";
     public static final boolean DEFAULT_AUTO_REFILL_BEHAVIOUR = true;
 
-
     private File rulesFile;
     private File treeFile;
 
@@ -80,7 +79,6 @@ public class InvTweaksConfig {
     private Vector<String> invalidKeywords;
 
     private long storedConfigLastModified;
-
 
     /**
      * Creates a new configuration holder. The configuration is not yet loaded.
@@ -94,7 +92,7 @@ public class InvTweaksConfig {
 
     public void load() throws Exception {
 
-        synchronized(this) {
+        synchronized (this) {
 
             // Reset all
             reset();
@@ -103,7 +101,7 @@ public class InvTweaksConfig {
             loadProperties();
             saveProperties(); // Needed to append non-saved properties to the file
 
-            if(tree != null) {
+            if (tree != null) {
                 MinecraftForge.EVENT_BUS.unregister(tree);
             }
             // Load tree
@@ -116,7 +114,7 @@ public class InvTweaksConfig {
                 reader = new FileReader(rulesFile);
                 reader.read(bytes);
             } finally {
-                if(reader != null) {
+                if (reader != null) {
                     reader.close();
                 }
             }
@@ -129,31 +127,32 @@ public class InvTweaksConfig {
             boolean defaultRuleset = true, defaultRulesetEmpty = true;
             String invalidKeyword;
 
-            for(String line : configLines) {
+            for (String line : configLines) {
                 String trimmedLine = line.trim();
-                if(!trimmedLine.isEmpty()) {
+                if (!trimmedLine.isEmpty()) {
                     // Change ruleset
-                    if(trimmedLine.matches("^[\\w]*[\\s]*\\:$")) {
+                    if (trimmedLine.matches("^[\\w]*[\\s]*\\:$")) {
                         // Make sure not to add an empty default config to the rulesets
-                        if(!defaultRuleset || !defaultRulesetEmpty) {
+                        if (!defaultRuleset || !defaultRulesetEmpty) {
                             activeRuleset.finalizeRules();
                             rulesets.add(activeRuleset);
                         }
-                        activeRuleset = new InvTweaksConfigInventoryRuleset(tree, trimmedLine
-                                .substring(0, trimmedLine.length() - 1));
+                        activeRuleset = new InvTweaksConfigInventoryRuleset(
+                                tree,
+                                trimmedLine.substring(0, trimmedLine.length() - 1));
                     }
 
                     // Register line
                     else {
                         try {
                             invalidKeyword = activeRuleset.registerLine(trimmedLine);
-                            if(defaultRuleset) {
+                            if (defaultRuleset) {
                                 defaultRulesetEmpty = false;
                             }
-                            if(invalidKeyword != null) {
+                            if (invalidKeyword != null) {
                                 invalidKeywords.add(invalidKeyword);
                             }
-                        } catch(InvalidParameterException e) {
+                        } catch (InvalidParameterException e) {
                             // Invalid line (comments), no problem
                         }
                     }
@@ -164,21 +163,21 @@ public class InvTweaksConfig {
             activeRuleset.finalizeRules();
             rulesets.add(activeRuleset);
 
-            // If a specific ruleset was loaded, 
+            // If a specific ruleset was loaded,
             // try to choose the same again, else load the first one
             currentRuleset = 0;
-            if(currentRulesetName != null) {
+            if (currentRulesetName != null) {
                 int rulesetIndex = 0;
-                for(InvTweaksConfigInventoryRuleset ruleset : rulesets) {
-                    if(ruleset.getName().equals(currentRulesetName)) {
+                for (InvTweaksConfigInventoryRuleset ruleset : rulesets) {
+                    if (ruleset.getName().equals(currentRulesetName)) {
                         currentRuleset = rulesetIndex;
                         break;
                     }
                     rulesetIndex++;
                 }
             }
-            if(currentRuleset == 0) {
-                if(!rulesets.isEmpty()) {
+            if (currentRuleset == 0) {
+                if (!rulesets.isEmpty()) {
                     currentRulesetName = rulesets.get(currentRuleset).getName();
                 } else {
                     currentRulesetName = null;
@@ -192,7 +191,7 @@ public class InvTweaksConfig {
     public boolean refreshProperties() throws IOException {
         // Check time of last edit
         long configLastModified = InvTweaksConst.CONFIG_PROPS_FILE.lastModified();
-        if(storedConfigLastModified != configLastModified) {
+        if (storedConfigLastModified != configLastModified) {
             storedConfigLastModified = configLastModified;
             loadProperties();
             return true;
@@ -206,15 +205,17 @@ public class InvTweaksConfig {
      */
     public void saveProperties() {
         File configPropsFile = getPropertyFile();
-        if(configPropsFile.exists()) {
+        if (configPropsFile.exists()) {
             try {
                 FileOutputStream fos = new FileOutputStream(configPropsFile);
-                properties.store(fos,
-                                 "Inventory Tweaks Configuration\n" + "(Regarding shortcuts, all key names can be found at: http://www.lwjgl.org/javadoc/org/lwjgl/input/Keyboard.html)");
+                properties.store(
+                        fos,
+                        "Inventory Tweaks Configuration\n"
+                                + "(Regarding shortcuts, all key names can be found at: http://www.lwjgl.org/javadoc/org/lwjgl/input/Keyboard.html)");
                 fos.flush();
                 fos.close();
                 storedConfigLastModified = InvTweaksConst.CONFIG_PROPS_FILE.lastModified();
-            } catch(IOException e) {
+            } catch (IOException e) {
                 InvTweaks.logInGameStatic("Failed to save config file " + InvTweaksConst.CONFIG_PROPS_FILE);
             }
         }
@@ -222,9 +223,9 @@ public class InvTweaksConfig {
 
     public Map<String, String> getProperties(String prefix) {
         Map<String, String> result = new HashMap<String, String>();
-        for(Object o : properties.keySet()) {
+        for (Object o : properties.keySet()) {
             String key = (String) o;
-            if(key.startsWith(prefix)) {
+            if (key.startsWith(prefix)) {
                 result.put(key, properties.getProperty(key));
             }
         }
@@ -249,7 +250,7 @@ public class InvTweaksConfig {
     public void setProperty(String key, String value) {
         properties.put(key, value);
         saveProperties();
-        if(key.equals(PROP_ENABLE_MIDDLE_CLICK)) {
+        if (key.equals(PROP_ENABLE_MIDDLE_CLICK)) {
             resolveConvenientInventoryConflicts();
         }
     }
@@ -267,7 +268,7 @@ public class InvTweaksConfig {
      * @return null if the given ID is invalid or the config is already enabled
      */
     public String switchConfig(int i) {
-        if(!rulesets.isEmpty() && i < rulesets.size() && i != currentRuleset) {
+        if (!rulesets.isEmpty() && i < rulesets.size() && i != currentRuleset) {
             currentRuleset = i;
             currentRulesetName = rulesets.get(currentRuleset).getName();
             return currentRulesetName;
@@ -277,7 +278,7 @@ public class InvTweaksConfig {
     }
 
     public String switchConfig() {
-        if(currentRuleset == -1) {
+        if (currentRuleset == -1) {
             return switchConfig(0);
         } else {
             return switchConfig((currentRuleset + 1) % rulesets.size());
@@ -320,22 +321,22 @@ public class InvTweaksConfig {
     }
 
     public boolean isAutoRefillEnabled(String itemID, int itemDamage) {
-        if(!getProperty(PROP_ENABLE_AUTO_REFILL).equals(VALUE_FALSE)) {
+        if (!getProperty(PROP_ENABLE_AUTO_REFILL).equals(VALUE_FALSE)) {
             List<IItemTreeItem> items = tree.getItems(itemID, itemDamage);
             Vector<String> autoReplaceRules = rulesets.get(currentRuleset).getAutoReplaceRules();
             boolean found = false;
-            for(String keyword : autoReplaceRules) {
-                if(keyword.equals(AUTOREFILL_NOTHING)) {
+            for (String keyword : autoReplaceRules) {
+                if (keyword.equals(AUTOREFILL_NOTHING)) {
                     return false;
                 }
-                if(tree.matches(items, keyword)) {
+                if (tree.matches(items, keyword)) {
                     found = true;
                 }
             }
-            if(found) {
+            if (found) {
                 return true;
             } else {
-                if(autoReplaceRules.isEmpty()) {
+                if (autoReplaceRules.isEmpty()) {
                     return DEFAULT_AUTO_REFILL_BEHAVIOUR;
                 } else {
                     return false;
@@ -350,7 +351,7 @@ public class InvTweaksConfig {
      * Check potential conflicts with Convenient Inventory (regarding the middle click shortcut), and solve them
      * according to the CI version.
      */
-    @SuppressWarnings({"rawtypes", "unchecked"})
+    @SuppressWarnings({ "rawtypes", "unchecked" })
     public void resolveConvenientInventoryConflicts() {
 
         boolean convenientInventoryInstalled = false;
@@ -363,15 +364,15 @@ public class InvTweaksConfig {
             Class convenientInventory = Class.forName("ConvenientInventory");
             convenientInventoryInstalled = true;
 
-            // Latest versions of CI: disable CI sorting thanks to 
+            // Latest versions of CI: disable CI sorting thanks to
             // the specific field provided for InvTweaks
             Field middleClickField = null;
             try {
                 middleClickField = convenientInventory.getDeclaredField("middleClickEnabled");
-            } catch(NoSuchFieldException e) {
+            } catch (NoSuchFieldException e) {
                 // Do nothing
             }
-            if(middleClickField != null) {
+            if (middleClickField != null) {
                 boolean middleClickSorting = getProperty(InvTweaksConfig.PROP_ENABLE_MIDDLE_CLICK)
                         .equals(InvTweaksConfig.VALUE_TRUE);
                 middleClickField.setAccessible(true);
@@ -386,7 +387,7 @@ public class InvTweaksConfig {
                 Field initializedField = convenientInventory.getDeclaredField("initialized");
                 initializedField.setAccessible(true);
                 Boolean initialized = (Boolean) initializedField.get(null);
-                if(!initialized) {
+                if (!initialized) {
                     Method initializeMethod = convenientInventory.getDeclaredMethod("initialize");
                     initializeMethod.setAccessible(true);
                     initializeMethod.invoke(null);
@@ -396,9 +397,9 @@ public class InvTweaksConfig {
                 Field actionMapField = convenientInventory.getDeclaredField("actionMap");
                 actionMapField.setAccessible(true);
                 List<Integer> actionMap[][] = (List[][]) actionMapField.get(null);
-                if(actionMap != null && actionMap[7] != null) { // 7 = SORT
-                    for(List<Integer> combo : actionMap[7]) {
-                        if(combo != null && combo.size() == 1 && combo.get(0) == 2) { // 2 = Middle click
+                if (actionMap != null && actionMap[7] != null) { // 7 = SORT
+                    for (List<Integer> combo : actionMap[7]) {
+                        if (combo != null && combo.size() == 1 && combo.get(0) == 2) { // 2 = Middle click
                             defaultCISortingShortcutEnabled = true;
                             break;
                         }
@@ -406,20 +407,20 @@ public class InvTweaksConfig {
                 }
             }
 
-        } catch(ClassNotFoundException e) {
+        } catch (ClassNotFoundException e) {
             // Failed to find Convenient Inventory class, not a problem
-        } catch(LinkageError e) {
+        } catch (LinkageError e) {
             // We're just trying to see if it exists and works, an error loading the class isn't important for us.
-        } catch(Exception e) {
+        } catch (Exception e) {
             InvTweaks.logInGameErrorStatic("invtweaks.modcompat.ci.error", e);
         }
 
         //// Shortcuts
 
         String shortcutsProp = getProperty(InvTweaksConfig.PROP_ENABLE_SHORTCUTS);
-        if(convenientInventoryInstalled && !shortcutsProp.equals(InvTweaksConfig.VALUE_CI_COMPATIBILITY)) {
+        if (convenientInventoryInstalled && !shortcutsProp.equals(InvTweaksConfig.VALUE_CI_COMPATIBILITY)) {
             setProperty(InvTweaksConfig.PROP_ENABLE_SHORTCUTS, InvTweaksConfig.VALUE_CI_COMPATIBILITY);
-        } else if(!convenientInventoryInstalled && shortcutsProp.equals(InvTweaksConfig.VALUE_CI_COMPATIBILITY)) {
+        } else if (!convenientInventoryInstalled && shortcutsProp.equals(InvTweaksConfig.VALUE_CI_COMPATIBILITY)) {
             setProperty(InvTweaksConfig.PROP_ENABLE_SHORTCUTS, InvTweaksConfig.VALUE_TRUE);
         }
 
@@ -427,11 +428,11 @@ public class InvTweaksConfig {
 
         // If CI's middle click is enabled, disable InvTweaks shortcut
         String middleClickProp = getProperty(InvTweaksConfig.PROP_ENABLE_MIDDLE_CLICK);
-        if(defaultCISortingShortcutEnabled && !middleClickProp.equals(InvTweaksConfig.VALUE_CI_COMPATIBILITY)) {
+        if (defaultCISortingShortcutEnabled && !middleClickProp.equals(InvTweaksConfig.VALUE_CI_COMPATIBILITY)) {
             setProperty(InvTweaksConfig.PROP_ENABLE_MIDDLE_CLICK, InvTweaksConfig.VALUE_CI_COMPATIBILITY);
         }
         // If the conflict is now resolved, re-enable the shortcut
-        else if(!defaultCISortingShortcutEnabled && middleClickProp.equals(InvTweaksConfig.VALUE_CI_COMPATIBILITY)) {
+        else if (!defaultCISortingShortcutEnabled && middleClickProp.equals(InvTweaksConfig.VALUE_CI_COMPATIBILITY)) {
             setProperty(InvTweaksConfig.PROP_ENABLE_MIDDLE_CLICK, InvTweaksConfig.VALUE_TRUE);
         }
     }
@@ -470,7 +471,7 @@ public class InvTweaksConfig {
     private void loadProperties() throws IOException {
         File configPropsFile = getPropertyFile();
         InvTweaksConfigProperties newProperties = new InvTweaksConfigProperties();
-        if(configPropsFile != null) {
+        if (configPropsFile != null) {
             FileInputStream fis = new FileInputStream(configPropsFile);
             newProperties.load(fis);
             fis.close();
@@ -485,15 +486,15 @@ public class InvTweaksConfig {
         newProperties.remove(PROP_KEY_SORT_INVENTORY);
 
         // XXX 1.34 update: force shortcuts reset
-        if(newProperties.get(PROP_VERSION) != null) {
+        if (newProperties.get(PROP_VERSION) != null) {
 
             // Override default values
-            for(Entry<Object, Object> entry : newProperties.entrySet()) {
+            for (Entry<Object, Object> entry : newProperties.entrySet()) {
                 properties.put(entry.getKey(), entry.getValue());
             }
 
             // Retro-compatibility: rename autoreplace
-            if(properties.contains("enableAutoreplaceSound")) {
+            if (properties.contains("enableAutoreplaceSound")) {
                 properties.put(PROP_OBSOLETE_ENABLE_AUTO_REFILL_SOUND, properties.get("enableAutoreplaceSound"));
                 properties.remove("enableAutoreplaceSound");
             }
@@ -507,10 +508,10 @@ public class InvTweaksConfig {
      */
     private File getPropertyFile() {
         File configPropsFile = InvTweaksConst.CONFIG_PROPS_FILE;
-        if(!configPropsFile.exists()) {
+        if (!configPropsFile.exists()) {
             try {
                 configPropsFile.createNewFile();
-            } catch(IOException e) {
+            } catch (IOException e) {
                 InvTweaks.logInGameStatic("invtweaks.propsfile.errors");
                 return null;
             }

@@ -3,13 +3,13 @@ package invtweaks.network.packets;
 import io.netty.buffer.ByteBuf;
 
 public class ITPacketClick implements ITPacket {
+
     public int slot;
     public int data;
     public int action;
     public int window;
 
-    public ITPacketClick() {
-    }
+    public ITPacketClick() {}
 
     public ITPacketClick(int _slot, int _data, int _action, int _window) {
         slot = _slot;

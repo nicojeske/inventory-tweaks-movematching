@@ -1,5 +1,8 @@
 package invtweaks;
 
+import java.awt.*;
+import java.util.List;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
@@ -9,9 +12,6 @@ import org.apache.logging.log4j.Logger;
 import org.lwjgl.util.Point;
 
 import invtweaks.forge.InvTweaksMod;
-
-import java.awt.*;
-import java.util.List;
 
 /**
  * The inventory and chest advanced settings menu.
@@ -57,60 +57,68 @@ public class InvTweaksGuiSettingsAdvanced extends InvTweaksGuiSettingsAbstract {
         // Create large buttons
 
         moveToButtonCoords(1, p);
-        controlList.add(new GuiButton(ID_EDITSHORTCUTS, p.getX() + 55, height / 6 + 144,
-                                      StatCollector.translateToLocal("invtweaks.settings.advanced.mappingsfile")));
+        controlList.add(
+                new GuiButton(
+                        ID_EDITSHORTCUTS,
+                        p.getX() + 55,
+                        height / 6 + 144,
+                        StatCollector.translateToLocal("invtweaks.settings.advanced.mappingsfile")));
 
         // Create settings buttons
 
         i += 2;
         moveToButtonCoords(i++, p);
-        InvTweaksGuiTooltipButton sortOnPickupBtn = new InvTweaksGuiTooltipButton(ID_SORT_ON_PICKUP, p.getX(), p.getY(),
-                                                                                  computeBooleanButtonLabel(
-                                                                                          InvTweaksConfig.PROP_ENABLE_SORTING_ON_PICKUP,
-                                                                                          labelSortOnPickup),
-                                                                                  StatCollector.translateToLocal(
-                                                                                          "invtweaks.settings.advanced.sortonpickup.tooltip"));
+        InvTweaksGuiTooltipButton sortOnPickupBtn = new InvTweaksGuiTooltipButton(
+                ID_SORT_ON_PICKUP,
+                p.getX(),
+                p.getY(),
+                computeBooleanButtonLabel(InvTweaksConfig.PROP_ENABLE_SORTING_ON_PICKUP, labelSortOnPickup),
+                StatCollector.translateToLocal("invtweaks.settings.advanced.sortonpickup.tooltip"));
         controlList.add(sortOnPickupBtn);
 
         moveToButtonCoords(i++, p);
-        InvTweaksGuiTooltipButton enableSoundsBtn = new InvTweaksGuiTooltipButton(ID_ENABLE_SOUNDS, p.getX(), p.getY(),
-                                                                                  computeBooleanButtonLabel(
-                                                                                          InvTweaksConfig.PROP_ENABLE_SOUNDS,
-                                                                                          labelEnableSounds),
-                                                                                  StatCollector.translateToLocal(
-                                                                                          "invtweaks.settings.advanced.sounds.tooltip"));
+        InvTweaksGuiTooltipButton enableSoundsBtn = new InvTweaksGuiTooltipButton(
+                ID_ENABLE_SOUNDS,
+                p.getX(),
+                p.getY(),
+                computeBooleanButtonLabel(InvTweaksConfig.PROP_ENABLE_SOUNDS, labelEnableSounds),
+                StatCollector.translateToLocal("invtweaks.settings.advanced.sounds.tooltip"));
         controlList.add(enableSoundsBtn);
 
         moveToButtonCoords(i++, p);
-        controlList.add(new InvTweaksGuiTooltipButton(ID_CHESTS_BUTTONS, p.getX(), p.getY(),
-                                                      computeBooleanButtonLabel(InvTweaksConfig.PROP_SHOW_CHEST_BUTTONS,
-                                                                                labelChestButtons), StatCollector
-                                                              .translateToLocal(
-                                                                      "invtweaks.settings.chestbuttons.tooltip")));
+        controlList.add(
+                new InvTweaksGuiTooltipButton(
+                        ID_CHESTS_BUTTONS,
+                        p.getX(),
+                        p.getY(),
+                        computeBooleanButtonLabel(InvTweaksConfig.PROP_SHOW_CHEST_BUTTONS, labelChestButtons),
+                        StatCollector.translateToLocal("invtweaks.settings.chestbuttons.tooltip")));
 
         moveToButtonCoords(i++, p);
-        InvTweaksGuiTooltipButton autoEquipArmorBtn = new InvTweaksGuiTooltipButton(ID_AUTO_EQUIP_ARMOR, p.getX(),
-                                                                                    p.getY(), computeBooleanButtonLabel(
-                InvTweaksConfig.PROP_ENABLE_AUTO_EQUIP_ARMOR, labelEquipArmor), StatCollector.translateToLocal(
-                "invtweaks.settings.advanced.autoequip.tooltip"));
+        InvTweaksGuiTooltipButton autoEquipArmorBtn = new InvTweaksGuiTooltipButton(
+                ID_AUTO_EQUIP_ARMOR,
+                p.getX(),
+                p.getY(),
+                computeBooleanButtonLabel(InvTweaksConfig.PROP_ENABLE_AUTO_EQUIP_ARMOR, labelEquipArmor),
+                StatCollector.translateToLocal("invtweaks.settings.advanced.autoequip.tooltip"));
         controlList.add(autoEquipArmorBtn);
 
         moveToButtonCoords(i++, p);
-        InvTweaksGuiTooltipButton serverAssistBtn = new InvTweaksGuiTooltipButton(ID_SERVER_ASSIST, p.getX(), p.getY(),
-                                                                                  computeBooleanButtonLabel(
-                                                                                          InvTweaksConfig.PROP_ENABLE_SERVER_ITEMSWAP,
-                                                                                          labelServerAssist),
-                                                                                  StatCollector.translateToLocal(
-                                                                                          "invtweaks.settings.advanced.serverassist.tooltip"));
+        InvTweaksGuiTooltipButton serverAssistBtn = new InvTweaksGuiTooltipButton(
+                ID_SERVER_ASSIST,
+                p.getX(),
+                p.getY(),
+                computeBooleanButtonLabel(InvTweaksConfig.PROP_ENABLE_SERVER_ITEMSWAP, labelServerAssist),
+                StatCollector.translateToLocal("invtweaks.settings.advanced.serverassist.tooltip"));
         controlList.add(serverAssistBtn);
 
         // Check if links to files are supported, if not disable the buttons
-        if(!Desktop.isDesktopSupported()) {
-            for(Object o : controlList) {
-                if(obf.isGuiButton(o)) {
+        if (!Desktop.isDesktopSupported()) {
+            for (Object o : controlList) {
+                if (obf.isGuiButton(o)) {
                     GuiButton button = (GuiButton) o;
                     // GuiButton
-                    if(button.id == ID_EDITSHORTCUTS) {
+                    if (button.id == ID_EDITSHORTCUTS) {
                         // GuiButton
                         button.enabled = false;
                     }
@@ -128,17 +136,25 @@ public class InvTweaksGuiSettingsAdvanced extends InvTweaksGuiSettingsAbstract {
         super.drawScreen(i, j, f);
 
         int x = width / 2;
-        drawCenteredString(obf.getFontRenderer(), StatCollector.translateToLocal("invtweaks.settings.pvpwarning.pt1"),
-                           x, 40, 0x999999);
-        drawCenteredString(obf.getFontRenderer(), StatCollector.translateToLocal("invtweaks.settings.pvpwarning.pt2"),
-                           x, 50, 0x999999);
+        drawCenteredString(
+                obf.getFontRenderer(),
+                StatCollector.translateToLocal("invtweaks.settings.pvpwarning.pt1"),
+                x,
+                40,
+                0x999999);
+        drawCenteredString(
+                obf.getFontRenderer(),
+                StatCollector.translateToLocal("invtweaks.settings.pvpwarning.pt2"),
+                x,
+                50,
+                0x999999);
     }
 
     @Override
     protected void actionPerformed(GuiButton guibutton) {
 
         // GuiButton
-        switch(guibutton.id) {
+        switch (guibutton.id) {
 
             // Toggle auto-refill sound
             case ID_SORT_ON_PICKUP:
@@ -163,16 +179,17 @@ public class InvTweaksGuiSettingsAdvanced extends InvTweaksGuiSettingsAbstract {
             // Toggle server assistance
             case ID_SERVER_ASSIST:
                 toggleBooleanButton(guibutton, InvTweaksConfig.PROP_ENABLE_SERVER_ITEMSWAP, labelServerAssist);
-                InvTweaksMod.proxy.setServerAssistEnabled(!InvTweaks.getConfigManager().getConfig().getProperty(
-                        InvTweaksConfig.PROP_ENABLE_SERVER_ITEMSWAP).equals(InvTweaksConfig.VALUE_FALSE));
+                InvTweaksMod.proxy.setServerAssistEnabled(
+                        !InvTweaks.getConfigManager().getConfig()
+                                .getProperty(InvTweaksConfig.PROP_ENABLE_SERVER_ITEMSWAP)
+                                .equals(InvTweaksConfig.VALUE_FALSE));
                 break;
-
 
             // Open shortcuts mappings in external editor
             case ID_EDITSHORTCUTS:
                 try {
                     Desktop.getDesktop().open(InvTweaksConst.CONFIG_PROPS_FILE);
-                } catch(Exception e) {
+                } catch (Exception e) {
                     InvTweaks.logInGameErrorStatic("invtweaks.settings.advanced.mappingsfile.error", e);
                 }
                 break;
