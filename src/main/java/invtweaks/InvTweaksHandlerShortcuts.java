@@ -10,6 +10,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 
 import org.apache.logging.log4j.Logger;
+import org.lwjgl.Sys;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 
@@ -50,11 +51,14 @@ public class InvTweaksHandlerShortcuts extends InvTweaksObfuscation {
      */
     private Map<InvTweaksShortcutType, List<InvTweaksShortcutMapping>> shortcuts;
 
+    private boolean newLwjglDetected;
+
     public InvTweaksHandlerShortcuts(Minecraft mc, InvTweaksConfig config) {
         super(mc);
         this.config = config;
         this.pressedKeys = new HashMap<Integer, Boolean>();
         this.shortcuts = new HashMap<InvTweaksShortcutType, List<InvTweaksShortcutMapping>>();
+        this.newLwjglDetected = !Sys.getVersion().startsWith("2.");
     }
 
     public void loadShortcuts() {
@@ -123,12 +127,14 @@ public class InvTweaksHandlerShortcuts extends InvTweaksObfuscation {
 
                 // Reset mouse status to prevent default action.
                 // TODO Find a better solution, like 'anticipate' default action?
-                Mouse.destroy();
-                Mouse.create();
+                if (!newLwjglDetected) {
+                    Mouse.destroy();
+                    Mouse.create();
 
-                // Fixes a tiny glitch (Steve looks for a short moment
-                // at [0, 0] because of the mouse reset).
-                Mouse.setCursorPosition(ex, ey);
+                    // Fixes a tiny glitch (Steve looks for a short moment
+                    // at [0, 0] because of the mouse reset).
+                    Mouse.setCursorPosition(ex, ey);
+                }
             }
 
         } catch (Exception e) {
