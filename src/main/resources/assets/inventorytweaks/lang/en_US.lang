@@ -17,6 +17,7 @@ invtweaks.button.settings.tooltip=Inventory settings
 invtweaks.button.chest1.tooltip=Default sorting
 invtweaks.button.chest2.tooltip=Sort in columns
 invtweaks.button.chest3.tooltip=Sort in rows
+invtweaks.button.movematching.tooltip=Move matching items
 invtweaks.settings.title=Inventory and chests settings
 invtweaks.settings.on=ON
 invtweaks.settings.off=OFF

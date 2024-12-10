@@ -932,6 +932,18 @@ public class InvTweaks extends InvTweaksObfuscation {
                                 customTextureAvailable);
                         controlList.add(button);
 
+                        controlList.add(
+                                new InvTweaksGuiMoveMatchingButton(
+                                        cfgManager,
+                                        InvTweaksConst.JIMEOWAN_ID,
+                                        (isChestWayTooBig) ? x + 22 : x - 49,
+                                        (isChestWayTooBig) ? y + 25 : y,
+                                        w,
+                                        h,
+                                        "->",
+                                        StatCollector.translateToLocal("invtweaks.button.movematching.tooltip"),
+                                        customTextureAvailable));
+
                     }
                 }
             }
