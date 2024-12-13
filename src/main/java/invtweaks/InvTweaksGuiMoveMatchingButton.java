@@ -148,7 +148,7 @@ public class InvTweaksGuiMoveMatchingButton extends InvTweaksGuiIconButton {
             if (slot == null) break;
 
             if (slot.getHasStack()) {
-                String itemName = slot.getStack().getItem().getUnlocalizedName();
+                String itemName = slot.getStack().getDisplayName();
                 int stackLimit = slot.getStack().getItem().getItemStackLimit();
 
                 ItemInfo itemInfo = itemMap.computeIfAbsent(itemName, k -> new ItemInfo(stackLimit));
